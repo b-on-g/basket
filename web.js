@@ -31149,6 +31149,12 @@ var $;
         return shift;
     }
     $_1.$bog_basket_shift_make = $bog_basket_shift_make;
+    function $bog_basket_shift_open(drive, volunteer) {
+        return $bog_basket_points_all(drive)
+            .flatMap(point => $bog_basket_shifts(point))
+            .find(shift => shift.Volunteer()?.val() === volunteer && !shift.Finished()?.val() && !shift.Source()?.val()) ?? null;
+    }
+    $_1.$bog_basket_shift_open = $bog_basket_shift_open;
     function $bog_basket_shop_publish(drive, updated) {
         const link = drive.Shop()?.val();
         if (!link)
@@ -34631,7 +34637,10 @@ var $;
                 });
             }
             shift_id(next) {
-                return this.$.$mol_state_local.value(`bog_basket_shift:${this.drive_id()}`, next) ?? '';
+                const id = this.$.$mol_state_local.value(`bog_basket_shift:${this.drive_id()}`, next) ?? '';
+                if (id || next !== undefined)
+                    return id;
+                return $bog_basket_shift_open(this.drive(), this.lord().str)?.head().str ?? '';
             }
             shift(id) {
                 return this.drive().land().Pawn($bog_basket_shift).Head(new $giper_baza_link(id));

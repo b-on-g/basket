@@ -7655,6 +7655,21 @@ var $;
             counter.Finish().click();
             $mol_assert_equal(app.pages(), [app.Points()]);
         },
+        async 'unfinished shift is found when the phone forgot it'($) {
+            const app = await app_example($);
+            app.shift_start(app.drive().Points().items()[2].head().str);
+            const shift = app.shift_id();
+            $.$mol_state_local.value(`bog_basket_shift:${app.drive_id()}`, null);
+            $mol_assert_equal(app.shift_id(), shift);
+            $mol_assert_equal(app.pages(), [app.Counter(shift)]);
+        },
+        async 'copy of a dismissed shift is not continued'($) {
+            const app = await app_example($);
+            app.shift_start(app.drive().Points().items()[2].head().str);
+            app.shift(app.shift_id()).Source('auto').val('original');
+            $.$mol_state_local.value(`bog_basket_shift:${app.drive_id()}`, null);
+            $mol_assert_equal(app.pages(), [app.Points()]);
+        },
         async 'the most lacking goods are asked first'($) {
             const app = await app_example($);
             app.shift_start(app.drive().Points().items()[0].head().str);

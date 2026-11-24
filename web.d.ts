@@ -49369,6 +49369,7 @@ declare namespace $ {
     export function $bog_basket_good_make(drive: $bog_basket_drive, title: string, weight: number, kit: number, price: number): $bog_basket_good;
     export function $bog_basket_point_make(drive: $bog_basket_drive, title: string, address: string, kits: number): $bog_basket_point;
     export function $bog_basket_shift_make(point: $bog_basket_point, volunteer: string, started: $mol_time_moment): $bog_basket_shift;
+    export function $bog_basket_shift_open(drive: $bog_basket_drive, volunteer: string): $bog_basket_shift | null;
     export function $bog_basket_shop_publish(drive: $bog_basket_drive, updated: $mol_time_moment): void;
     export function $bog_basket_buy(goods: $bog_basket_shop_point['goods'], money: number): number[];
     export function $bog_basket_csv(drive: $bog_basket_drive): string;
