@@ -108,11 +108,11 @@ namespace $ {
 			const land = app.drive().land()
 			const auth = $.$giper_baza_auth.grab()
 			const { copy } = phone( $, land, auth )
-			const guest = $bog_basket_app.make({
+			const guest = $$.$bog_basket_app.make({
 				$,
 				drive: ()=> copy.Data( $bog_basket_drive ),
 				lord: ()=> auth.pass().lord(),
-			}) as $$.$bog_basket_app
+			})
 			const pages = $mol_wire_async({ list: ()=> guest.pages() })
 
 			await wire( land, copy )
