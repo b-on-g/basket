@@ -155,7 +155,9 @@ namespace $.$$ {
 		}
 
 		shift_id( next?: string | null ) {
-			return this.$.$mol_state_local.value( `bog_basket_shift:${ this.drive_id() }`, next ) ?? ''
+			const id = this.$.$mol_state_local.value( `bog_basket_shift:${ this.drive_id() }`, next ) ?? ''
+			if( id || next !== undefined ) return id
+			return $bog_basket_shift_open( this.drive(), this.lord().str )?.head().str ?? ''
 		}
 
 		shift( id: string ) {

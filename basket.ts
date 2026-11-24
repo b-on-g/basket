@@ -133,6 +133,12 @@ namespace $ {
 		return shift
 	}
 
+	export function $bog_basket_shift_open( drive: $bog_basket_drive, volunteer: string ) {
+		return $bog_basket_points_all( drive )
+			.flatMap( point => $bog_basket_shifts( point ) )
+			.find( shift => shift.Volunteer()?.val() === volunteer && !shift.Finished()?.val() && !shift.Source()?.val() ) ?? null
+	}
+
 	export function $bog_basket_shop_publish( drive: $bog_basket_drive, updated: $mol_time_moment ) {
 		const link = drive.Shop()?.val()
 		if( !link ) return
