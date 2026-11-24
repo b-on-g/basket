@@ -1,0 +1,20 @@
+{
+	"name": "Корзина — учёт пункта сбора",
+	"short_name": "Корзина",
+	"description": "Учёт пунктов сбора продуктов без интернета",
+	"id": "bog_basket",
+	"start_url": "./",
+	"display": "standalone",
+	"background_color": "#1f7a3d",
+	"theme_color": "#1f7a3d",
+	"lang": "ru",
+	"scope": "./",
+	"icons": [
+		{
+			"src": "bog/basket/assets/logo.svg",
+			"type": "image/svg+xml",
+			"sizes": "any",
+			"purpose": "any"
+		}
+	]
+}
