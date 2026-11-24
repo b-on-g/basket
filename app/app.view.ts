@@ -1,5 +1,8 @@
 namespace $.$$ {
 
+	const local = typeof location !== 'undefined' && /^(localhost|127\.0\.0\.1|\[::1\])$/.test( location.hostname )
+	if( local ) $giper_baza_yard.masters = (): string[] => $giper_baza_yard.masters_override() ?? [ 'http://localhost:9090/' ]
+
 	export class $bog_basket_app extends $.$bog_basket_app {
 
 		home() {
