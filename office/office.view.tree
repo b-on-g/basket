@@ -1,0 +1,73 @@
+$bog_basket_office $mol_page
+	drive $bog_basket_drive
+	title <= drive_title \
+	tools /
+		<= Status $giper_baza_status
+	body /
+		<= Nav $mol_view
+			sub /
+				<= Team_link $mol_link
+					title \Волонтёры
+					arg *
+						screen \team
+						point null
+						admit null
+				<= Kit_link $mol_link
+					title \Набор
+					arg *
+						screen \kit
+						point null
+						admit null
+				<= Count_link $mol_link
+					title \Приём на точке
+					arg *
+						screen \count
+						point null
+						admit null
+				<= Drives_link $mol_link
+					title \Все сборы
+					arg *
+						drive \
+						screen null
+						point null
+						admit null
+		<= Total $mol_paragraph
+			title <= total_text \
+		<= Goods $mol_labeler
+			title \Собрано всего
+			content /
+				<= Goods_rows $mol_list
+					rows <= good_rows /
+						<= Good* $bog_basket_bar
+							title <= good_title* \
+							got <= good_got* 0
+							need <= good_need* 0
+		<= Points $mol_labeler
+			title \Точки
+			content /
+				<= Points_rows $mol_list
+					rows <= point_rows /
+						<= Point* $mol_link
+							arg <= point_arg* *
+							sub /
+								<= Point_bar* $bog_basket_bar
+									title <= point_title* \
+									got <= point_kits* 0
+									need <= point_plan* 0
+								<= Point_note* $mol_view
+									sub /
+										<= point_note* \
+		<= Point_new $mol_view
+			sub /
+				<= Point_new_title $mol_string
+					hint \Название точки
+					value? <=> point_new_title? \
+					submit? <=> point_add? null
+				<= Point_new_add $mol_button_major
+					title \Добавить точку
+					enabled <= point_add_enabled false
+					click? <=> point_add?
+		<= Csv $mol_button_download
+			title \Сводка для Excel (CSV)
+			file_name \korzina.csv
+			blob <= csv_blob null

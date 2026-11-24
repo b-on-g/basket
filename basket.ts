@@ -27,7 +27,20 @@ namespace $ {
 		Goods: $giper_baza_list_link.to( ()=> $bog_basket_good ),
 		Points: $giper_baza_list_link.to( ()=> $bog_basket_point ),
 		Volunteers: $giper_baza_dict_to( $giper_baza_atom_text ),
+		Shop: $giper_baza_atom_text,
 	}) {}
+
+	export class $bog_basket_shop extends $giper_baza_dict.with({
+		Title: $giper_baza_atom_text,
+		Updated: $giper_baza_atom_time,
+		Points: $giper_baza_dict_to( $giper_baza_atom_text ),
+	}) {}
+
+	export type $bog_basket_shop_point = {
+		title: string
+		address: string
+		goods: { title: string, price: number, got: number, need: number }[]
+	}
 
 	export class $bog_basket_home extends $giper_baza_dict.with({
 		Drives: $giper_baza_list_link.to( ()=> $bog_basket_drive ),
@@ -66,6 +79,15 @@ namespace $ {
 		return kits.length ? Math.min( ... kits ) : 0
 	}
 
+	export function $bog_basket_tier( land: $giper_baza_land, lord: $giper_baza_link ) {
+		land.sync()
+		return land.lord_rank( lord )
+	}
+
+	export function $bog_basket_total( point: $bog_basket_point, goods: readonly $bog_basket_good[] ) {
+		return goods.reduce( ( sum, good )=> sum + $bog_basket_got( point, good ), 0 )
+	}
+
 	export function $bog_basket_lack( drive: $bog_basket_drive, point: $bog_basket_point ) {
 		const portion = ( good: $bog_basket_good )=> $bog_basket_got( point, good ) / $bog_basket_need( point, good )
 		return $bog_basket_goods( drive )
@@ -75,7 +97,9 @@ namespace $ {
 
 	export function $bog_basket_drive_make( $: $, title: string ) {
 		const land = $.$giper_baza_glob.land_grab([[ null, $giper_baza_rank_deny ]])
+		const shop = $.$giper_baza_glob.land_grab([[ null, $giper_baza_rank_read ]])
 		const drive = land.Data( $bog_basket_drive )
+		drive.Shop( 'auto' )!.val( shop.link().str )
 		drive.Title( 'auto' )!.val( title )
 		drive.Goods( 'auto' )
 		drive.Points( 'auto' )
@@ -109,24 +133,84 @@ namespace $ {
 		return shift
 	}
 
+	export function $bog_basket_shop_publish( drive: $bog_basket_drive, updated: $mol_time_moment ) {
+		const link = drive.Shop()?.val()
+		if( !link ) return
+		const shop = drive.$.$giper_baza_glob.Land( new $giper_baza_link( link ) ).Data( $bog_basket_shop )
+		const title = drive.Title()?.val() ?? ''
+		const goods = $bog_basket_goods( drive )
+		const points = $bog_basket_points_all( drive )
+		const texts = new Map( points.map( point => [ point.head().str, JSON.stringify({
+			title: point.Title()?.val() ?? '',
+			address: point.Address()?.val() ?? '',
+			goods: goods.map( good => ({
+				title: good.Title()?.val() ?? '',
+				price: good.Price()?.val() ?? 0,
+				got: $bog_basket_got( point, good ),
+				need: $bog_basket_need( point, good ),
+			}) ),
+		} satisfies $bog_basket_shop_point ) ] ) )
+		const extra = ( shop.Points()?.keys() ?? [] ).map( String ).filter( id => !texts.has( id ) )
+		const fresh = [ ... texts ].filter( ([ id, text ])=> shop.Points()?.key( id )?.val() !== text )
+		if( shop.Title()?.val() === title && !extra.length && !fresh.length ) return
+		shop.Title( 'auto' )!.val( title )
+		for( const id of extra ) shop.Points( 'auto' )!.has( id, false )
+		for( const [ id, text ] of fresh ) shop.Points( 'auto' )!.key( id, 'auto' ).val( text )
+		shop.Updated( 'auto' )!.val( updated )
+	}
+
+	export function $bog_basket_buy( goods: $bog_basket_shop_point[ 'goods' ], money: number ) {
+		const counts = goods.map( ()=> 0 )
+		for(;;) {
+			const portion = ( index: number )=> ( goods[ index ].got + counts[ index ] ) / goods[ index ].need
+			const next = goods.map( ( _, index )=> index )
+				.filter( index => goods[ index ].price > 0 && goods[ index ].price <= money && portion( index ) < 1 )
+				.sort( ( left, right )=> portion( left ) - portion( right ) )[0]
+			if( next === undefined ) return counts
+			++ counts[ next ]
+			money -= goods[ next ].price
+		}
+	}
+
+	export function $bog_basket_csv( drive: $bog_basket_drive ) {
+		const goods = $bog_basket_goods( drive )
+		const head = [ 'Точка', 'Адрес', 'Наборов план', 'Наборов готово', ... goods.flatMap( good => {
+			const title = good.Title()?.val() ?? ''
+			return [ `${ title }, принято`, `${ title }, план` ]
+		} ) ]
+		const rows = $bog_basket_points_all( drive ).map( point => [
+			point.Title()?.val() ?? '',
+			point.Address()?.val() ?? '',
+			point.Kits()?.val() ?? 0,
+			$bog_basket_kits( drive, point ),
+			... goods.flatMap( good => [ $bog_basket_got( point, good ), $bog_basket_need( point, good ) ] ),
+		].map( String ) )
+		return $mol_csv_serial_table( [ head, ... rows ], ';' )
+	}
+
 	export function $bog_basket_admit( drive: $bog_basket_drive, pass: $giper_baza_auth_pass, name: string ) {
-		drive.land().give( pass, $giper_baza_rank_post( 'just' ) )
-		drive.Volunteers( 'auto' )!.key( pass.lord().str, 'auto' ).val( name )
+		const lord = pass.lord()
+		if( !drive.Volunteers()?.key( lord.str )?.val() ) drive.Volunteers( 'auto' )!.key( lord.str, 'auto' ).val( name )
+		if( $bog_basket_tier( drive.land(), lord ) < $giper_baza_rank_tier.post ) drive.land().give( pass, $giper_baza_rank_post( 'just' ) )
 	}
 
 	export function $bog_basket_dismiss( drive: $bog_basket_drive, lord: $giper_baza_link ) {
-		for( const point of $bog_basket_points_all( drive ) ) {
-			for( const shift of $bog_basket_shifts( point ) ) {
-				if( shift.Volunteer()?.val() !== lord.str ) continue
-				if( shift.Source()?.val() ) continue
-				const copy = $bog_basket_shift_make( point, lord.str, shift.Started()!.val()! )
-				copy.Source( 'auto' )!.val( shift.head().str )
-				copy.Finished( 'auto' )!.val( shift.Finished()?.val() ?? null )
-				for( const good of $bog_basket_goods( drive ) ) {
-					const count = $bog_basket_count( shift, good )
-					if( count ) copy.Counts( 'auto' )!.key( good.head().str, 'auto' ).val( count )
-				}
-			}
+		const goods = $bog_basket_goods( drive )
+		const copies = $bog_basket_points_all( drive ).flatMap( point => $bog_basket_shifts( point )
+			.filter( shift => shift.Volunteer()?.val() === lord.str && !shift.Source()?.val() )
+			.map( shift => ({
+				point,
+				source: shift.head().str,
+				started: shift.Started()!.val()!,
+				finished: shift.Finished()?.val() ?? null,
+				counts: goods.map( good => [ good.head().str, $bog_basket_count( shift, good ) ] as const ).filter( ([ , count ])=> count ),
+			}) )
+		)
+		for( const { point, source, started, finished, counts } of copies ) {
+			const copy = $bog_basket_shift_make( point, lord.str, started )
+			for( const [ good, count ] of counts ) copy.Counts( 'auto' )!.key( good, 'auto' ).val( count )
+			copy.Finished( 'auto' )!.val( finished )
+			copy.Source( 'auto' )!.val( source )
 		}
 		drive.land().lord_rank( lord, $giper_baza_rank_deny )
 	}

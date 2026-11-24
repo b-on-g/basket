@@ -11,13 +11,9 @@ namespace $.$$ {
 		About: {
 			padding: $mol_gap.block,
 		},
-		Invite: {
-			padding: $mol_gap.block,
-		},
-		Example: {
-			margin: $mol_gap.block,
-			align: {
-				self: 'flex-start',
+		Create_title: {
+			flex: {
+				grow: 1,
 			},
 		},
 	} )

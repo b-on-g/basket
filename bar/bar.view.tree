@@ -1,0 +1,14 @@
+$bog_basket_bar $mol_view
+	got 0
+	need 0
+	sub /
+		<= Head $mol_view
+			sub /
+				<= Title $mol_view
+					sub /
+						<= title \
+				<= Total $mol_view
+					sub /
+						<= total_text \
+		<= Progress $mol_portion
+			portion <= progress 0

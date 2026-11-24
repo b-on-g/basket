@@ -1,0 +1,39 @@
+$bog_basket_buyer $mol_page
+	shop $bog_basket_shop
+	point_id? \
+	title <= shop_title \
+	body <= blocks /
+		<= Points $mol_list
+			rows <= point_rows /
+				<= Point* $mol_button_minor
+					click? <=> point_open*? null
+					sub /
+						<= Point_title* $mol_view
+							sub /
+								<= point_title* \
+						<= Point_address* $mol_view
+							sub /
+								<= point_address* \
+		<= Intro $mol_paragraph
+			title <= intro_text \
+		<= Money $mol_labeler
+			title \Сколько готовы потратить, ₽
+			content /
+				<= Money_number $mol_number
+					value_min 0
+					precision_change 100
+					value? <=> money? 500
+		<= Goods $mol_list
+			rows <= good_rows /
+				<= Good* $mol_view
+					sub /
+						<= Good_title* $mol_view
+							sub /
+								<= good_title* \
+						<= Good_count* $mol_view
+							sub /
+								<= good_count* \
+		<= Note $mol_paragraph
+			title <= note_text \
+		<= Refuse $mol_paragraph
+			title \Не принимаем стекло, скоропортящееся, алкоголь и табак.

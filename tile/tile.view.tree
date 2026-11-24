@@ -1,6 +1,4 @@
 $bog_basket_tile $mol_view
-	got 0
-	need 0
 	mine? 0
 	attr *
 		^
@@ -10,16 +8,10 @@ $bog_basket_tile $mol_view
 			hint \Принять одну
 			click? <=> add? null
 			sub /
-				<= Head $mol_view
-					sub /
-						<= Title $mol_view
-							sub /
-								<= title \
-						<= Total $mol_view
-							sub /
-								<= total_text \
-				<= Progress $mol_portion
-					portion <= progress 0
+				<= Bar $bog_basket_bar
+					title <= title \
+					got <= got 0
+					need <= need 0
 		<= Mine $mol_view
 			sub /
 				<= mine_text \

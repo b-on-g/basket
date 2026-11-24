@@ -6,6 +6,10 @@ namespace $.$$ {
 			return this.drive().land().Pawn( $bog_basket_point ).Head( new $giper_baza_link( id ) )
 		}
 
+		tool_list() {
+			return [ ... this.chief() ? [ this.Office_link() ] : [], this.Status() ]
+		}
+
 		drive_title() {
 			return this.drive().Title()?.val() ?? ''
 		}

@@ -1,0 +1,51 @@
+$bog_basket_kit $mol_page
+	drive $bog_basket_drive
+	title \Набор
+	tools /
+		<= Close $mol_link
+			hint \Закрыть
+			arg *
+				screen null
+			sub /
+				<= Close_icon $mol_icon_close
+	body /
+		<= Hint $mol_paragraph
+			title \Из чего собирается один набор. План точки считается по нему. Цена нужна для подсказки покупателю, её можно не указывать.
+		<= Rows $mol_list
+			rows <= rows /
+				<= Row* $mol_list
+					rows /
+						<= Row_head* $mol_view
+							sub <= row_head* /
+								<= Good_title* $mol_string
+									hint \Продукт
+									value? <=> good_title*? \
+								<= Drop* $mol_button_minor
+									hint \Убрать продукт
+									click? <=> drop*? null
+									sub /
+										<= Drop_icon* $mol_icon_close
+						<= Numbers* $mol_view
+							sub /
+								<= Kit* $mol_labeler
+									title \В наборе, шт.
+									content /
+										<= Kit_number* $mol_number
+											value_min 0
+											value? <=> good_kit*? 0
+								<= Weight* $mol_labeler
+									title \Вес, кг
+									content /
+										<= Weight_number* $mol_number
+											value_min 0
+											precision 0.01
+											value? <=> good_weight*? 0
+								<= Price* $mol_labeler
+									title \Цена, ₽
+									content /
+										<= Price_number* $mol_number
+											value_min 0
+											value? <=> good_price*? 0
+		<= Add $mol_button_major
+			title \Добавить продукт
+			click? <=> add? null

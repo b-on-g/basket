@@ -19,45 +19,13 @@ namespace $.$$ {
 		},
 		Add: {
 			flex: {
-				direction: 'column',
 				grow: 1,
 				shrink: 1,
 				basis: 0,
 			},
-			align: {
-				items: 'stretch',
-			},
 			minHeight: '4.5rem',
 			minWidth: 0,
 			userSelect: 'none',
-		},
-		Head: {
-			flex: {
-				wrap: 'wrap',
-			},
-			justify: {
-				content: 'space-between',
-			},
-			align: {
-				items: 'baseline',
-			},
-			gap: $mol_gap.space,
-		},
-		Progress: {
-			flex: {
-				basis: '0.5rem',
-				grow: 0,
-			},
-			width: '100%',
-		},
-		Title: {
-			font: {
-				size: '1.1rem',
-				weight: 'bold',
-			},
-		},
-		Total: {
-			whiteSpace: 'nowrap',
 		},
 		Mine: {
 			minWidth: '2.5rem',

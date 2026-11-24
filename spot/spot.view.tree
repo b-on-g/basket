@@ -1,0 +1,64 @@
+$bog_basket_spot $mol_page
+	drive $bog_basket_drive
+	point $bog_basket_point
+	buyer_link \
+	drop_done? null
+	title <= point_title_text \
+	tools /
+		<= Close $mol_link
+			hint \Закрыть
+			arg *
+				screen null
+				point null
+			sub /
+				<= Close_icon $mol_icon_close
+	body <= blocks /
+		<= Form $mol_list
+			rows /
+				<= Title_field $mol_string
+					hint \Название
+					value? <=> point_title? \
+				<= Address $mol_string
+					hint \Адрес
+					value? <=> point_address? \
+				<= Kits_label $mol_labeler
+					title \План, наборов
+					content /
+						<= Kits $mol_number
+							value_min 0
+							value? <=> point_kits? 0
+		<= Goods $mol_labeler
+			title \Принято
+			content /
+				<= Goods_rows $mol_list
+					rows <= good_rows /
+						<= Good* $bog_basket_bar
+							title <= good_title* \
+							got <= good_got* 0
+							need <= good_need* 0
+		<= Shifts $mol_labeler
+			title \Смены
+			content /
+				<= Shifts_rows $mol_list
+					rows <= shift_rows /
+						<= Shift* $mol_paragraph
+							title <= shift_text* \
+		<= Buyer $mol_labeler
+			title \Код для покупателей
+			content /
+				<= Buyer_list $mol_list
+					rows /
+						<= Buyer_hint $mol_paragraph
+							title \Распечатайте и повесьте у входа: покупатель увидит, чего не хватает именно здесь.
+						<= Buyer_code $bog_qr
+							uri <= buyer_link
+							gradient_stops /
+								\var(--mol_theme_text)
+								\var(--mol_theme_text)
+						<= Buyer_open $mol_link
+							uri <= buyer_link
+							target \_blank
+							title \Открыть страницу покупателя
+		<= Drop $mol_button_minor
+			title \Удалить точку
+			click? <=> drop? null

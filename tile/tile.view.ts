@@ -6,14 +6,6 @@ namespace $.$$ {
 			return this.need() > 0 && this.got() >= this.need()
 		}
 
-		total_text() {
-			return this.need() ? `${ this.got() } из ${ this.need() }` : String( this.got() )
-		}
-
-		progress() {
-			return this.need() ? Math.min( 1, this.got() / this.need() ) : 0
-		}
-
 		mine_text() {
 			return this.mine() ? `+${ this.mine() }` : ''
 		}

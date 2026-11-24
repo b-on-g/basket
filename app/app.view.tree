@@ -4,21 +4,65 @@ $bog_basket_app $mol_book2
 	Placeholder null
 	Welcome $mol_page
 		title \Корзина
-		body /
+		body <= welcome_blocks /
 			<= About $mol_paragraph
-				title \Учёт пункта сбора продуктов. Волонтёр отмечает принятое кнопками, даже без интернета, а штаб видит, чего не хватает на каждой точке.
-			<= Invite $mol_paragraph
-				title \Если вы волонтёр, откройте ссылку, которую прислал координатор.
-			<= Example $mol_button_major
-				title \Показать на примере
-				click? <=> example_open? null
+				title \Учёт пунктов сбора продуктов. Волонтёр отмечает принятое кнопками, даже без интернета, а штаб видит, чего не хватает на каждой точке.
+			<= Drives $mol_labeler
+				title \Ваши сборы
+				content /
+					<= Drives_rows $mol_list
+						rows <= drive_rows /
+							<= Drive* $mol_link
+								arg <= drive_arg* *
+								title <= drive_title* \
+			<= Create $mol_labeler
+				title \Вы координатор
+				content /
+					<= Create_row $mol_view
+						sub /
+							<= Create_title $mol_string
+								hint \Название сбора
+								value? <=> create_title? \
+								submit? <=> create? null
+							<= Create_run $mol_button_major
+								title \Создать
+								enabled <= create_enabled false
+								click? <=> create?
+			<= Join $mol_labeler
+				title \Вы волонтёр
+				content /
+					<= Join_hint $mol_paragraph
+						title \Откройте ссылку, которую прислал координатор.
+			<= Try $mol_labeler
+				title \Хотите посмотреть
+				content /
+					<= Example $mol_button_major
+						title \Показать на примере
+						click? <=> example_open? null
 	Admission $bog_basket_admission
 		link <= admission_link \
-	Points $bog_basket_points
+	Office $bog_basket_office
 		drive <= drive $bog_basket_drive
+	Team $bog_basket_team
+		drive <= drive
+		admit? <=> admit? \
+		invite_link <= invite_link \
+	Kit $bog_basket_kit
+		drive <= drive
+	Spot* $bog_basket_spot
+		drive <= drive
+		point <= spot_point* $bog_basket_point
+		buyer_link <= buyer_link* \
+		drop_done? <=> spot_close? null
+	Points $bog_basket_points
+		drive <= drive
+		chief <= chief false
 		start*? <=> shift_start*? null
 	Counter* $bog_basket_counter
 		drive <= drive
 		point <= shift_point* $bog_basket_point
 		shift <= shift* $bog_basket_shift
 		finish? <=> shift_finish*? null
+	Buyer $bog_basket_buyer
+		shop <= shop $bog_basket_shop
+		point_id? <=> spot_id? \

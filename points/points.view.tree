@@ -1,8 +1,13 @@
 $bog_basket_points $mol_page
 	drive $bog_basket_drive
 	start*? null
+	chief false
 	title <= drive_title \
-	tools /
+	tools <= tool_list /
+		<= Office_link $mol_link
+			title \Штаб
+			arg *
+				screen null
 		<= Status $giper_baza_status
 	body /
 		<= Hint $mol_paragraph

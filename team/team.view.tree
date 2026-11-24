@@ -1,0 +1,67 @@
+$bog_basket_team $mol_page
+	drive $bog_basket_drive
+	admit? \
+	invite_link \
+	title \Волонтёры
+	tools /
+		<= Close $mol_link
+			hint \Закрыть
+			arg *
+				screen null
+				admit null
+			sub /
+				<= Close_icon $mol_icon_close
+	body <= blocks /
+		<= Pending $mol_list
+			rows /
+				<= Pending_text $mol_paragraph
+					title <= pending_text \
+				<= Name $mol_string
+					hint \Имя или позывной
+					value? <=> name? \
+					submit? <=> admit_run? null
+				<= Admit $mol_button_major
+					title \Допустить
+					enabled <= admit_enabled false
+					click? <=> admit_run?
+		<= Paste $mol_labeler
+			title \Допустить по ссылке волонтёра
+			content /
+				<= Paste_field $mol_string
+					hint \Вставьте ссылку сюда
+					value? <=> paste? \
+		<= Invite $mol_labeler
+			title \Приглашение
+			content /
+				<= Invite_list $mol_list
+					rows /
+						<= Invite_hint $mol_paragraph
+							title \Дайте волонтёру эту ссылку. Он покажет в ответ свой код: наведите на него камеру и допустите.
+						<= Invite_code $bog_qr
+							uri <= invite_link
+							gradient_stops /
+								\var(--mol_theme_text)
+								\var(--mol_theme_text)
+						<= Invite_copy $mol_button_copy
+							title \Скопировать приглашение
+							text <= invite_link
+		<= People $mol_labeler
+			title \Список
+			content /
+				<= People_rows $mol_list
+					rows <= people_rows /
+						<= Person* $mol_view
+							sub <= person_sub* /
+								<= Person_name* $mol_string
+									value? <=> person_name*? \
+								<= Person_status* $mol_view
+									sub /
+										<= person_status* \
+								<= Dismiss* $mol_button_minor
+									title \Отозвать
+									click? <=> dismiss*? null
+								<= Restore* $mol_button_minor
+									title \Вернуть
+									click? <=> restore*? null
+		<= Warning $mol_paragraph
+			title \Отзывайте, когда волонтёр закончил и его отметки дошли. То, что осталось на его телефоне неотправленным, пропадёт.
