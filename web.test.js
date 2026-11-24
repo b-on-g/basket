@@ -5897,6 +5897,34 @@ var $;
 
 ;
 "use strict";
+/** @jsx $mol_jsx */
+/** @jsxFrag $mol_jsx_frag */
+var $;
+(function ($) {
+    $mol_test({
+        'safe tag'() {
+            $mol_assert_equal($mol_dom_serialize($$.$mol_dom_safe([$mol_jsx("div", null, "foo")])[0]), $mol_dom_serialize($mol_jsx("div", null, "foo")));
+        },
+        'bad tag'() {
+            $mol_assert_equal($mol_dom_serialize($$.$mol_dom_safe([$mol_jsx("script", null, "alert('ahtung!')")])[0]), $mol_dom_serialize($mol_jsx($mol_jsx_frag, null, "alert('ahtung!')")));
+        },
+        'common attr'() {
+            $mol_assert_equal($mol_dom_serialize($$.$mol_dom_safe([$mol_jsx("a", { id: "foo" }, "foo")])[0]), $mol_dom_serialize($mol_jsx("a", { id: "foo" }, "foo")));
+        },
+        'safe attr'() {
+            $mol_assert_equal($mol_dom_serialize($$.$mol_dom_safe([$mol_jsx("a", { href: "https://example.org/" }, "foo")])[0]), $mol_dom_serialize($mol_jsx("a", { href: "https://example.org/" }, "foo")));
+        },
+        'bad attr'() {
+            $mol_assert_equal($mol_dom_serialize($$.$mol_dom_safe([$mol_jsx("a", { onclick: "alert('ahtung!')" }, "foo")])[0]), $mol_dom_serialize($mol_jsx("a", null, "foo")));
+        },
+        'danger attr'() {
+            $mol_assert_equal($mol_dom_serialize($$.$mol_dom_safe([$mol_jsx("a", { href: "javascript:alert('ahtung!')" }, "foo")])[0]), $mol_dom_serialize($mol_jsx("a", { href: "about:blank#javascript:alert('ahtung!')" }, "foo")));
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
 var $;
 (function ($) {
     class TestClass extends Uint8Array {
@@ -6348,34 +6376,6 @@ var $;
             },
         });
     })($$ = $.$$ || ($.$$ = {}));
-})($ || ($ = {}));
-
-;
-"use strict";
-/** @jsx $mol_jsx */
-/** @jsxFrag $mol_jsx_frag */
-var $;
-(function ($) {
-    $mol_test({
-        'safe tag'() {
-            $mol_assert_equal($mol_dom_serialize($$.$mol_dom_safe([$mol_jsx("div", null, "foo")])[0]), $mol_dom_serialize($mol_jsx("div", null, "foo")));
-        },
-        'bad tag'() {
-            $mol_assert_equal($mol_dom_serialize($$.$mol_dom_safe([$mol_jsx("script", null, "alert('ahtung!')")])[0]), $mol_dom_serialize($mol_jsx($mol_jsx_frag, null, "alert('ahtung!')")));
-        },
-        'common attr'() {
-            $mol_assert_equal($mol_dom_serialize($$.$mol_dom_safe([$mol_jsx("a", { id: "foo" }, "foo")])[0]), $mol_dom_serialize($mol_jsx("a", { id: "foo" }, "foo")));
-        },
-        'safe attr'() {
-            $mol_assert_equal($mol_dom_serialize($$.$mol_dom_safe([$mol_jsx("a", { href: "https://example.org/" }, "foo")])[0]), $mol_dom_serialize($mol_jsx("a", { href: "https://example.org/" }, "foo")));
-        },
-        'bad attr'() {
-            $mol_assert_equal($mol_dom_serialize($$.$mol_dom_safe([$mol_jsx("a", { onclick: "alert('ahtung!')" }, "foo")])[0]), $mol_dom_serialize($mol_jsx("a", null, "foo")));
-        },
-        'danger attr'() {
-            $mol_assert_equal($mol_dom_serialize($$.$mol_dom_safe([$mol_jsx("a", { href: "javascript:alert('ahtung!')" }, "foo")])[0]), $mol_dom_serialize($mol_jsx("a", { href: "about:blank#javascript:alert('ahtung!')" }, "foo")));
-        },
-    });
 })($ || ($ = {}));
 
 ;
@@ -7457,18 +7457,131 @@ var $;
 ;
 "use strict";
 var $;
+(function ($) {
+    const { separated, repeat_greedy, char_except, from: regexp, line_end, end } = $mol_regexp;
+    function $mol_csv_syntax_make(delimiter) {
+        const cell = regexp({
+            quote: ['"', separated(repeat_greedy(char_except('"'), 1), '""'), '"'],
+            inline: repeat_greedy(char_except('"\n' + delimiter), 1),
+        });
+        const row = regexp([
+            { row: separated(cell, delimiter) },
+            { line_end, end },
+        ]);
+        const table = repeat_greedy(row, 1);
+        return { cell, row, table };
+    }
+    $.$mol_csv_syntax_make = $mol_csv_syntax_make;
+    const cache = {};
+    function $mol_csv_syntax(delimiter) {
+        if (cache[delimiter])
+            return cache[delimiter];
+        return cache[delimiter] = $mol_csv_syntax_make(delimiter);
+    }
+    $.$mol_csv_syntax = $mol_csv_syntax;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    /**
+     * Parse csv text with delimiter
+     * @see https://mol.hyoo.ru/#!section=demos/demo=mol_csv_parse
+     */
+    function $mol_csv_parse(text, delimiter = ',') {
+        const lines = $mol_csv_parse_table(text, delimiter);
+        const header = lines.shift();
+        const res = [];
+        for (const line of lines) {
+            const row = {};
+            res.push(row);
+            for (let i = 0; i < header?.length; ++i) {
+                row[header[i]] = line[i];
+            }
+        }
+        return res;
+    }
+    $.$mol_csv_parse = $mol_csv_parse;
+    function $mol_csv_parse_table(text, delimiter = ',') {
+        const syntax = $mol_csv_syntax(delimiter);
+        const rows = [];
+        for (const line of text.matchAll(syntax.row)) {
+            if (!line.groups)
+                continue;
+            const cells = [];
+            rows.push(cells);
+            for (const item of line.groups.row.matchAll(syntax.cell)) {
+                if (!item.groups)
+                    continue;
+                const text = item.groups.inline
+                    || item.groups.quote.slice(1, -1).replace(/""/g, '"');
+                cells.push(text);
+            }
+        }
+        return rows;
+    }
+    $.$mol_csv_parse_table = $mol_csv_parse_table;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_test({
+        'serial & parse'() {
+            const data = [
+                { foo: '123', bar: '456' },
+                { foo: 'x"xx', bar: 'y,y\ny' },
+            ];
+            $mol_assert_equal($mol_csv_parse($mol_csv_serial(data)), data);
+        },
+        'parse & serial'() {
+            const csv = '"foo","bar"\n"123","456"\n"x""xx","y,y\ny"';
+            $mol_assert_equal($mol_csv_serial($mol_csv_parse(csv)), csv);
+        },
+        'one row'() {
+            const csv = '"foo","y,y\ny"';
+            $mol_assert_equal($mol_csv_serial_table($mol_csv_parse_table(csv)), csv);
+        },
+        'one col'() {
+            const csv = '"foo"\n"y,y\ny"';
+            $mol_assert_equal($mol_csv_serial($mol_csv_parse(csv)), csv);
+        },
+        'one cell'() {
+            const csv = '"y,y\ny"';
+            $mol_assert_equal($mol_csv_serial_table($mol_csv_parse_table(csv)), csv);
+        },
+        'tab separated'() {
+            const tsv = '"foo"\t"bar"\n"123"\t"456"\n"x""xx"\t"y,y\ny"';
+            $mol_assert_equal($mol_csv_serial($mol_csv_parse(tsv, '\t'), '\t'), tsv);
+        },
+    });
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
 (function ($_1) {
     function app_make($) {
         const app = $bog_basket_app.make({ $ });
-        app.drive_id('');
+        app.drive_open('');
         new $mol_wire_atom('bog_basket_test_home', () => app.home()).fresh();
         return app;
     }
-    async function app_example($) {
+    async function app_example($, screen = 'count') {
         const app = app_make($);
         await $mol_wire_async(app).example_open();
-        new $mol_wire_atom('bog_basket_test_drive', () => app.drive().land()).fresh();
+        app.screen(screen);
+        keep(app);
         return app;
+    }
+    function keep(app) {
+        new $mol_wire_atom('bog_basket_test_drive', () => app.drive().land()).fresh();
+        new $mol_wire_atom('bog_basket_test_shop', () => shop(app).land()).fresh();
+    }
+    function shop(app) {
+        return app.$.$giper_baza_glob.Land(new $giper_baza_link(app.drive().Shop().val())).Data($bog_basket_shop);
     }
     async function wire(from, to) {
         const net = {
@@ -7537,7 +7650,7 @@ var $;
             tile.Add().click();
             tile.Drop().click();
             $mol_assert_equal(tile.mine_text(), '+2');
-            $mol_assert_equal(tile.total_text(), '2 из 80');
+            $mol_assert_equal(tile.Bar().total_text(), '2 из 80');
             $mol_assert_equal(counter.summary_text(), 'Наборов 0 из 40, за смену принято 2');
             counter.Finish().click();
             $mol_assert_equal(app.pages(), [app.Points()]);
@@ -7602,6 +7715,121 @@ var $;
             await guest.ops.accept(9);
             await wire(guest.copy, land);
             $mol_assert_equal(await office.got(), 36);
+        },
+        async 'coordinator creates a drive with a kit and adds a point'($) {
+            const app = app_make($);
+            $mol_assert_equal(app.Create_run().enabled(), false);
+            app.Create_title().value('Марафон в Самаре');
+            $mol_assert_equal(app.Create_run().enabled(), true);
+            await $mol_wire_async(app).create();
+            keep(app);
+            const office = app.Office();
+            $mol_assert_equal(app.pages(), [office]);
+            $mol_assert_equal(office.drive_title(), 'Марафон в Самаре');
+            $mol_assert_equal(office.good_rows().length, $bog_basket_example_goods.length);
+            $mol_assert_equal($bog_basket_goods(app.drive()).every(good => !good.Price()?.val()), true);
+            office.Point_new_title().value('Универсам');
+            office.Point_new_add().click();
+            const id = app.drive().Points().items()[0].head().str;
+            $mol_assert_equal(office.point_rows().length, 1);
+            app.screen('spot');
+            app.spot_id(id);
+            const spot = app.Spot(id);
+            $mol_assert_equal(app.pages(), [office, spot]);
+            spot.Kits().value(15);
+            $mol_assert_equal(office.point_plan(id), 15);
+            $mol_assert_equal(spot.good_need($bog_basket_goods(app.drive())[0].head().str), 30);
+            spot.Drop().click();
+            $mol_assert_equal(office.point_rows().length, 0);
+            $mol_assert_equal(app.pages(), [office]);
+        },
+        async 'office sums points and tells what is lacking'($) {
+            const app = await app_example($, '');
+            const office = app.Office();
+            const buckwheat = $bog_basket_goods(app.drive())[0].head().str;
+            $mol_assert_equal(office.good_got(buckwheat), 31 + 12);
+            $mol_assert_equal(office.good_need(buckwheat), 70 * 2);
+            $mol_assert_equal(office.total_text(), 'Принято 264 шт., 139 кг. Наборов готово 8 из 70.');
+            $mol_assert_equal(office.point_note(app.drive().Points().items()[0].head().str), 'Смен идёт: 1, не хватает: масло в пластике, тушёнка в жести');
+        },
+        async 'summary table opens in a spreadsheet'($) {
+            const app = await app_example($, '');
+            const rows = $mol_csv_parse_table($bog_basket_csv(app.drive()), ';');
+            $mol_assert_equal(rows.length, 1 + $bog_basket_example_points.length);
+            $mol_assert_equal(rows[0].slice(0, 6), ['Точка', 'Адрес', 'Наборов план', 'Наборов готово', 'Гречка, принято', 'Гречка, план']);
+            $mol_assert_equal(rows[1].slice(2, 6), ['20', '6', '31', '40']);
+        },
+        async 'coordinator admits by the link of a volunteer and dismisses'($) {
+            const app = await app_example($, '');
+            const team = app.Team();
+            const pass = $.$giper_baza_auth.grab().pass();
+            const lord = pass.lord().str;
+            team.paste(`https://b-on-g.github.io/basket/#!drive=${app.drive_id()}/admit=${pass}`);
+            $mol_assert_equal(app.admit(), pass.toString());
+            $mol_assert_equal(app.pages(), [app.Office(), team]);
+            $mol_assert_equal(team.Admit().enabled(), true);
+            team.Name().value('Смелый');
+            await $mol_wire_async(team).admit_run();
+            $mol_assert_equal(app.admit(), '');
+            $mol_assert_equal(team.people_rows(), [team.Person(lord)]);
+            $mol_assert_equal([team.person_name(lord), team.person_status(lord)], ['Смелый', 'допущен']);
+            await $mol_wire_async(team).dismiss(lord);
+            $mol_assert_equal(team.person_status(lord), 'отозван');
+            $mol_assert_equal(team.person_sub(lord)[2], team.Restore(lord));
+            await $mol_wire_async(team).restore(lord);
+            $mol_assert_equal(team.person_status(lord), 'допущен');
+        },
+        async 'broken admission link is refused'($) {
+            const app = await app_example($, '');
+            const team = app.Team();
+            app.admit('abc');
+            $mol_assert_equal(team.Admit().enabled(), false);
+            $mol_assert_equal(team.pending_text().startsWith('Ссылка повреждена'), true);
+        },
+        async 'good with accepted items can not be removed from the kit'($) {
+            const app = await app_example($, '');
+            const kit = app.Kit();
+            const first = $bog_basket_goods(app.drive())[0].head().str;
+            $mol_assert_equal(kit.droppable(first), false);
+            $mol_assert_equal(kit.row_head(first), [kit.Good_title(first)]);
+            kit.Add().click();
+            const fresh = $bog_basket_goods(app.drive()).at(-1).head().str;
+            $mol_assert_equal(kit.rows().length, $bog_basket_example_goods.length + 1);
+            kit.Drop(fresh).click();
+            $mol_assert_equal(kit.rows().length, $bog_basket_example_goods.length);
+        },
+        async 'buyer gets the most needed goods for the sum'($) {
+            const app = await app_example($, '');
+            await $mol_wire_async({ publish: () => $bog_basket_shop_publish(app.drive(), new $mol_time_moment('2026-11-28T10:00')) }).publish();
+            const id = app.drive().Points().items()[0].head().str;
+            $mol_assert_equal(app.buyer_link(id).includes(shop(app).land().link().str), true);
+            $mol_assert_equal(app.buyer_link(id).includes(id), true);
+            const buyer = $$.$bog_basket_buyer.make({ $, shop: () => shop(app) });
+            $mol_assert_equal(buyer.point_rows().length, $bog_basket_example_points.length);
+            buyer.point_open(id);
+            $mol_assert_equal(buyer.point_current().title, 'Точка 1');
+            buyer.money(500);
+            const goods = buyer.point_current().goods;
+            const sum = buyer.counts().reduce((sum, count, index) => sum + count * goods[index].price, 0);
+            $mol_assert_equal(sum > 400 && sum <= 500, true);
+            $mol_assert_equal(buyer.counts()[4] > 0, true);
+            $mol_assert_equal(buyer.counts()[2], 0);
+            buyer.money(10);
+            $mol_assert_equal(buyer.good_rows().length, 0);
+            $mol_assert_equal(buyer.note_text(), 'На эту сумму ничего из нужного не купить.');
+        },
+        async 'published shop does not change without new goods'($) {
+            const app = await app_example($, '');
+            const publish = (time) => $mol_wire_async({ run: () => $bog_basket_shop_publish(app.drive(), new $mol_time_moment(time)) }).run();
+            const hour = () => shop(app).Updated().val().hour;
+            await publish('2026-11-28T10:00');
+            await publish('2026-11-28T11:00');
+            $mol_assert_equal(hour(), 10);
+            app.shift_start(app.drive().Points().items()[0].head().str);
+            const counter = app.Counter(app.shift_id());
+            counter.tiles()[0].Add().click();
+            await publish('2026-11-28T12:00');
+            $mol_assert_equal(hour(), 12);
         },
     });
 })($ || ($ = {}));

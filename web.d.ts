@@ -21163,6 +21163,72 @@ declare namespace $.$$ {
 }
 
 declare namespace $ {
+    function $mol_dom_safe_uri(uri: string): string;
+    function $mol_dom_safe_attr(val: string): string;
+    let $mol_dom_safe_rules: Record<string, Record<string, (val: string) => string>>;
+    function $mol_dom_safe(this: $, nodes: ChildNode[]): ChildNode[];
+}
+
+declare namespace $ {
+
+	export class $mol_link extends $mol_view {
+		uri_toggle( ): string
+		uri_unsafe( ): ReturnType< $mol_link['uri_toggle'] >
+		hint( ): string
+		hint_safe( ): ReturnType< $mol_link['hint'] >
+		target( ): string
+		file_name( ): string
+		current( ): boolean
+		relation( ): string
+		event_click( next?: any ): any
+		click( next?: ReturnType< $mol_link['event_click'] > ): ReturnType< $mol_link['event_click'] >
+		uri( ): string
+		dom_name( ): string
+		uri_off( ): string
+		uri_native( ): any
+		external( ): boolean
+		attr( ): ({ 
+			'href': ReturnType< $mol_link['uri_unsafe'] >,
+			'title': ReturnType< $mol_link['hint_safe'] >,
+			'target': ReturnType< $mol_link['target'] >,
+			'download': ReturnType< $mol_link['file_name'] >,
+			'mol_link_current': ReturnType< $mol_link['current'] >,
+			'rel': ReturnType< $mol_link['relation'] >,
+		})  & ReturnType< $mol_view['attr'] >
+		sub( ): readonly($mol_view_content)[]
+		arg( ): Record<string, any>
+		event( ): ({ 
+			click( next?: ReturnType< $mol_link['click'] > ): ReturnType< $mol_link['click'] >,
+		})  & ReturnType< $mol_view['event'] >
+	}
+	
+}
+
+//# sourceMappingURL=link.view.tree.d.ts.map
+declare namespace $.$$ {
+    /**
+     * Dynamic hyperlink. It can add, change or remove parameters. A link that leads to the current page has [mol_link_current] attribute set to true.
+     * @see https://mol.hyoo.ru/#!section=demos/demo=mol_link_demo
+     */
+    class $mol_link extends $.$mol_link {
+        uri_toggle(): string;
+        uri(): string;
+        uri_off(): string;
+        uri_native(): URL;
+        current(): boolean;
+        file_name(): string;
+        minimal_height(): number;
+        external(): boolean;
+        target(): '_self' | '_blank' | '_top' | '_parent' | string;
+        hint_safe(): string;
+        uri_unsafe(): string;
+    }
+}
+
+declare namespace $ {
+}
+
+declare namespace $ {
 
 	export class $mol_ghost extends $mol_view {
 		Sub( ): $mol_view
@@ -22685,72 +22751,6 @@ declare namespace $ {
 }
 
 //# sourceMappingURL=off.view.tree.d.ts.map
-declare namespace $ {
-    function $mol_dom_safe_uri(uri: string): string;
-    function $mol_dom_safe_attr(val: string): string;
-    let $mol_dom_safe_rules: Record<string, Record<string, (val: string) => string>>;
-    function $mol_dom_safe(this: $, nodes: ChildNode[]): ChildNode[];
-}
-
-declare namespace $ {
-
-	export class $mol_link extends $mol_view {
-		uri_toggle( ): string
-		uri_unsafe( ): ReturnType< $mol_link['uri_toggle'] >
-		hint( ): string
-		hint_safe( ): ReturnType< $mol_link['hint'] >
-		target( ): string
-		file_name( ): string
-		current( ): boolean
-		relation( ): string
-		event_click( next?: any ): any
-		click( next?: ReturnType< $mol_link['event_click'] > ): ReturnType< $mol_link['event_click'] >
-		uri( ): string
-		dom_name( ): string
-		uri_off( ): string
-		uri_native( ): any
-		external( ): boolean
-		attr( ): ({ 
-			'href': ReturnType< $mol_link['uri_unsafe'] >,
-			'title': ReturnType< $mol_link['hint_safe'] >,
-			'target': ReturnType< $mol_link['target'] >,
-			'download': ReturnType< $mol_link['file_name'] >,
-			'mol_link_current': ReturnType< $mol_link['current'] >,
-			'rel': ReturnType< $mol_link['relation'] >,
-		})  & ReturnType< $mol_view['attr'] >
-		sub( ): readonly($mol_view_content)[]
-		arg( ): Record<string, any>
-		event( ): ({ 
-			click( next?: ReturnType< $mol_link['click'] > ): ReturnType< $mol_link['click'] >,
-		})  & ReturnType< $mol_view['event'] >
-	}
-	
-}
-
-//# sourceMappingURL=link.view.tree.d.ts.map
-declare namespace $.$$ {
-    /**
-     * Dynamic hyperlink. It can add, change or remove parameters. A link that leads to the current page has [mol_link_current] attribute set to true.
-     * @see https://mol.hyoo.ru/#!section=demos/demo=mol_link_demo
-     */
-    class $mol_link extends $.$mol_link {
-        uri_toggle(): string;
-        uri(): string;
-        uri_off(): string;
-        uri_native(): URL;
-        current(): boolean;
-        file_name(): string;
-        minimal_height(): number;
-        external(): boolean;
-        target(): '_self' | '_blank' | '_top' | '_parent' | string;
-        hint_safe(): string;
-        uri_unsafe(): string;
-    }
-}
-
-declare namespace $ {
-}
-
 declare namespace $ {
     const $giper_baza_stat_series_base: {
         new (): {
@@ -45184,44 +45184,58 @@ declare namespace $.$$ {
 
 declare namespace $ {
 
-	type $mol_paragraph__title_bog_basket_points_1 = $mol_type_enforce<
+	type $mol_link__title_bog_basket_points_1 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_link['title'] >
+	>
+	type $mol_link__arg_bog_basket_points_2 = $mol_type_enforce<
+		({ 
+			'screen': any,
+		}) 
+		,
+		ReturnType< $mol_link['arg'] >
+	>
+	type $mol_paragraph__title_bog_basket_points_3 = $mol_type_enforce<
 		ReturnType< $bog_basket_points['hint_text'] >
 		,
 		ReturnType< $mol_paragraph['title'] >
-	>
-	type $mol_view__sub_bog_basket_points_2 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
-	>
-	type $mol_view__sub_bog_basket_points_3 = $mol_type_enforce<
-		readonly(any)[]
-		,
-		ReturnType< $mol_view['sub'] >
 	>
 	type $mol_view__sub_bog_basket_points_4 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_button_minor__click_bog_basket_points_5 = $mol_type_enforce<
+	type $mol_view__sub_bog_basket_points_5 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_view__sub_bog_basket_points_6 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_button_minor__click_bog_basket_points_7 = $mol_type_enforce<
 		ReturnType< $bog_basket_points['start'] >
 		,
 		ReturnType< $mol_button_minor['click'] >
 	>
-	type $mol_button_minor__sub_bog_basket_points_6 = $mol_type_enforce<
+	type $mol_button_minor__sub_bog_basket_points_8 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_minor['sub'] >
 	>
-	type $mol_list__rows_bog_basket_points_7 = $mol_type_enforce<
+	type $mol_list__rows_bog_basket_points_9 = $mol_type_enforce<
 		ReturnType< $bog_basket_points['rows'] >
 		,
 		ReturnType< $mol_list['rows'] >
 	>
 	export class $bog_basket_points extends $mol_page {
 		drive_title( ): string
+		Office_link( ): $mol_link
 		Status( ): $giper_baza_status
+		tool_list( ): readonly(any)[]
 		hint_text( ): string
 		Hint( ): $mol_paragraph
 		point_title( id: any): string
@@ -45235,8 +45249,9 @@ declare namespace $ {
 		Rows( ): $mol_list
 		drive( ): $bog_basket_drive
 		start( id: any, next?: any ): any
+		chief( ): boolean
 		title( ): ReturnType< $bog_basket_points['drive_title'] >
-		tools( ): readonly(any)[]
+		tools( ): ReturnType< $bog_basket_points['tool_list'] >
 		body( ): readonly(any)[]
 	}
 	
@@ -45246,6 +45261,7 @@ declare namespace $ {
 declare namespace $.$$ {
     class $bog_basket_points extends $.$bog_basket_points {
         point(id: string): $bog_basket_point;
+        tool_list(): ($.$mol_link | $.$giper_baza_status)[];
         drive_title(): string;
         hint_text(): "Выберите точку, где вы сегодня стоите." | "Координатор ещё не добавил точки.";
         rows(): $mol_button_minor[];
@@ -45256,6 +45272,15 @@ declare namespace $.$$ {
 }
 
 declare namespace $.$$ {
+}
+
+declare namespace $ {
+    /**
+     * Serialize csv data with delimiter
+     * @see https://mol.hyoo.ru/#!section=demos/demo=mol_csv_serial
+     */
+    function $mol_csv_serial(data: Record<string, any>[], delimiter?: string): string;
+    function $mol_csv_serial_table(rows: string[][], delimiter?: string): string;
 }
 
 declare namespace $ {
@@ -46509,6 +46534,7 @@ declare namespace $ {
                 [$mol_ambient_ref]: $;
                 [Symbol.dispose](): void;
             } | null;
+            readonly Shop: (auto?: any) => $giper_baza_atom_text | null;
         }>;
         path: string;
     } & {
@@ -48211,10 +48237,372 @@ declare namespace $ {
                 [Symbol.toPrimitive](): any;
                 [$mol_key_handle](): any;
             };
+            readonly Shop: typeof $giper_baza_atom_text;
         };
     };
     export class $bog_basket_drive extends $bog_basket_drive_base {
     }
+    const $bog_basket_shop_base: Omit<typeof $giper_baza_dict, "prototype"> & {
+        new (...args: any[]): $mol_type_override<$giper_baza_dict, {
+            readonly Title: (auto?: any) => $giper_baza_atom_text | null;
+            readonly Updated: (auto?: any) => $giper_baza_atom_time | null;
+            readonly Points: (auto?: any) => {
+                Value: typeof $giper_baza_atom_text;
+                key(key: $giper_baza_vary_type, auto?: any): $giper_baza_atom_text;
+                keys(): readonly $giper_baza_vary_type[];
+                dive<Pawn_1 extends typeof $giper_baza_pawn>(key: $giper_baza_vary_type, Pawn: Pawn_1, auto?: any): InstanceType<Pawn_1> | null;
+                [$mol_dev_format_head](): any[];
+                items_vary(next?: readonly $giper_baza_vary_type[], tag?: keyof typeof $giper_baza_unit_sand_tag): readonly $giper_baza_vary_type[];
+                splice(next: readonly $giper_baza_vary_type[], from?: number, to?: number, tag?: keyof typeof $giper_baza_unit_sand_tag): void;
+                find(vary: $giper_baza_vary_type): $giper_baza_unit_sand | null;
+                has(vary: $giper_baza_vary_type, next?: boolean, tag?: keyof typeof $giper_baza_unit_sand_tag): boolean;
+                add(vary: $giper_baza_vary_type, tag?: keyof typeof $giper_baza_unit_sand_tag): void;
+                cut(vary: $giper_baza_vary_type): void;
+                move(from: number, to: number): void;
+                wipe(seat: number): void;
+                pawn_make<Pawn_1 extends typeof $giper_baza_pawn>(Pawn: Pawn_1, vary: $giper_baza_vary_type, tag?: keyof typeof $giper_baza_unit_sand_tag): InstanceType<Pawn_1>;
+                land(): $giper_baza_land;
+                head(): $giper_baza_link;
+                land_link(): $giper_baza_link;
+                link(): $giper_baza_link;
+                toJSON(): string;
+                cast<Pawn_1 extends typeof $giper_baza_pawn>(Pawn: Pawn_1): InstanceType<Pawn_1>;
+                pawns<Pawn_1 extends typeof $giper_baza_pawn>(Pawn: Pawn_1 | null): readonly InstanceType<Pawn_1>[];
+                units(): $giper_baza_unit_sand[];
+                units_of(peer: $giper_baza_link | null): $giper_baza_unit_sand[];
+                meta(next?: $giper_baza_link): $giper_baza_link | null;
+                meta_of(peer: $giper_baza_link | null): $giper_baza_link | null;
+                filled(): boolean;
+                can_change(): boolean;
+                last_change(): $mol_time_moment | null;
+                authors(): $giper_baza_auth_pass[];
+                get $(): $;
+                set $(next: $);
+                destructor(): void;
+                toString(): string;
+                [Symbol.toStringTag]: string;
+                [$mol_ambient_ref]: $;
+                [Symbol.dispose](): void;
+            } | null;
+        }>;
+        path: string;
+    } & {
+        schema: {
+            [x: string]: typeof $giper_baza_pawn;
+        } & {
+            readonly Title: typeof $giper_baza_atom_text;
+            readonly Updated: typeof $giper_baza_atom_time;
+            readonly Points: {
+                new (): {
+                    Value: typeof $giper_baza_atom_text;
+                    key(key: $giper_baza_vary_type, auto?: any): $giper_baza_atom_text;
+                    keys(): readonly $giper_baza_vary_type[];
+                    dive<Pawn_1 extends typeof $giper_baza_pawn>(key: $giper_baza_vary_type, Pawn: Pawn_1, auto?: any): InstanceType<Pawn_1> | null;
+                    [$mol_dev_format_head](): any[];
+                    items_vary(next?: readonly $giper_baza_vary_type[], tag?: keyof typeof $giper_baza_unit_sand_tag): readonly $giper_baza_vary_type[];
+                    splice(next: readonly $giper_baza_vary_type[], from?: number, to?: number, tag?: keyof typeof $giper_baza_unit_sand_tag): void;
+                    find(vary: $giper_baza_vary_type): $giper_baza_unit_sand | null;
+                    has(vary: $giper_baza_vary_type, next?: boolean, tag?: keyof typeof $giper_baza_unit_sand_tag): boolean;
+                    add(vary: $giper_baza_vary_type, tag?: keyof typeof $giper_baza_unit_sand_tag): void;
+                    cut(vary: $giper_baza_vary_type): void;
+                    move(from: number, to: number): void;
+                    wipe(seat: number): void;
+                    pawn_make<Pawn_1 extends typeof $giper_baza_pawn>(Pawn: Pawn_1, vary: $giper_baza_vary_type, tag?: keyof typeof $giper_baza_unit_sand_tag): InstanceType<Pawn_1>;
+                    land(): $giper_baza_land;
+                    head(): $giper_baza_link;
+                    land_link(): $giper_baza_link;
+                    link(): $giper_baza_link;
+                    toJSON(): string;
+                    cast<Pawn_1 extends typeof $giper_baza_pawn>(Pawn: Pawn_1): InstanceType<Pawn_1>;
+                    pawns<Pawn_1 extends typeof $giper_baza_pawn>(Pawn: Pawn_1 | null): readonly InstanceType<Pawn_1>[];
+                    units(): $giper_baza_unit_sand[];
+                    units_of(peer: $giper_baza_link | null): $giper_baza_unit_sand[];
+                    meta(next?: $giper_baza_link): $giper_baza_link | null;
+                    meta_of(peer: $giper_baza_link | null): $giper_baza_link | null;
+                    filled(): boolean;
+                    can_change(): boolean;
+                    last_change(): $mol_time_moment | null;
+                    authors(): $giper_baza_auth_pass[];
+                    get $(): $;
+                    set $(next: $);
+                    destructor(): void;
+                    toString(): string;
+                    [Symbol.toStringTag]: string;
+                    [$mol_ambient_ref]: $;
+                    [Symbol.dispose](): void;
+                };
+                toString(): any;
+                tag: keyof typeof $giper_baza_unit_sand_tag;
+                schema: Record<string, typeof $giper_baza_pawn>;
+                with<This extends typeof $giper_baza_dict, const Schema extends Record<string, {
+                    tag: keyof typeof $giper_baza_unit_sand_tag;
+                    new (): {};
+                }>>(this: This, schema: Schema, path?: string): Omit<This, "prototype"> & {
+                    new (...args: any[]): $mol_type_override<InstanceType<This>, { readonly [Key in keyof Schema]: (auto?: any) => InstanceType<Schema[Key]> | null; }>;
+                    path: string;
+                } & {
+                    schema: {
+                        [x: string]: typeof $giper_baza_pawn;
+                    } & Schema;
+                };
+                of<Init extends new (...args: any[]) => any>(init: Init): {
+                    new (): {
+                        items(next?: readonly (Init extends typeof $mol_schema_any ? Init : {
+                            new (value?: any): {
+                                constructor: Function;
+                                toString(): string;
+                                toLocaleString(): string;
+                                valueOf(): Object;
+                                hasOwnProperty(v: PropertyKey): boolean;
+                                isPrototypeOf(v: Object): boolean;
+                                propertyIsEnumerable(v: PropertyKey): boolean;
+                            };
+                            Class: Init;
+                            toString(): string;
+                            guard<This extends typeof $mol_schema_any, Value>(this: This, value: Value): Value & This["default"];
+                            cast<This extends typeof $mol_schema_any>(this: This, value: unknown): This["default"];
+                            default: InstanceType<Init>;
+                            check<This extends typeof $mol_schema_any, Value_1>(this: This, value: Value_1): value is Value_1 & This["default"];
+                            [Symbol.toStringTag]: string;
+                            [$mol_key_handle](): string;
+                            [Symbol.hasInstance]<This extends typeof $mol_schema_any, Value_2>(this: This, value: Value_2): value is Value_2 & This["default"];
+                            getPrototypeOf(o: any): any;
+                            getOwnPropertyDescriptor(o: any, p: PropertyKey): PropertyDescriptor | undefined;
+                            getOwnPropertyNames(o: any): string[];
+                            create(o: object | null): any;
+                            create(o: object | null, properties: PropertyDescriptorMap & ThisType<any>): any;
+                            defineProperty<T>(o: T, p: PropertyKey, attributes: PropertyDescriptor & ThisType<any>): T;
+                            defineProperties<T>(o: T, properties: PropertyDescriptorMap & ThisType<any>): T;
+                            seal<T>(o: T): T;
+                            freeze<T extends Function>(f: T): T;
+                            freeze<T extends {
+                                [idx: string]: U | null | undefined | object;
+                            }, U extends string | bigint | number | boolean | symbol>(o: T): Readonly<T>;
+                            freeze<T>(o: T): Readonly<T>;
+                            preventExtensions<T>(o: T): T;
+                            isSealed(o: any): boolean;
+                            isFrozen(o: any): boolean;
+                            isExtensible(o: any): boolean;
+                            keys(o: object): string[];
+                            keys(o: {}): string[];
+                            assign<T extends {}, U_1>(target: T, source: U_1): T & U_1;
+                            assign<T extends {}, U_2, V>(target: T, source1: U_2, source2: V): T & U_2 & V;
+                            assign<T extends {}, U_3, V_1, W>(target: T, source1: U_3, source2: V_1, source3: W): T & U_3 & V_1 & W;
+                            assign(target: object, ...sources: any[]): any;
+                            getOwnPropertySymbols(o: any): symbol[];
+                            is(value1: any, value2: any): boolean;
+                            setPrototypeOf(o: any, proto: object | null): any;
+                            values<T>(o: {
+                                [s: string]: T;
+                            } | ArrayLike<T>): T[];
+                            values(o: {}): any[];
+                            entries<T>(o: {
+                                [s: string]: T;
+                            } | ArrayLike<T>): [string, T][];
+                            entries(o: {}): [string, any][];
+                            getOwnPropertyDescriptors<T>(o: T): { [P in keyof T]: TypedPropertyDescriptor<T[P]>; } & {
+                                [x: string]: PropertyDescriptor;
+                            };
+                            fromEntries<T = any>(entries: Iterable<readonly [PropertyKey, T]>): {
+                                [k: string]: T;
+                            };
+                            fromEntries(entries: Iterable<readonly any[]>): any;
+                            hasOwn(o: object, v: PropertyKey): boolean;
+                            groupBy<K extends PropertyKey, T>(items: Iterable<T>, keySelector: (item: T, index: number) => K): Partial<Record<K, T[]>>;
+                        })["default"][]): readonly (Init extends typeof $mol_schema_any ? Init : {
+                            new (value?: any): {
+                                constructor: Function;
+                                toString(): string;
+                                toLocaleString(): string;
+                                valueOf(): Object;
+                                hasOwnProperty(v: PropertyKey): boolean;
+                                isPrototypeOf(v: Object): boolean;
+                                propertyIsEnumerable(v: PropertyKey): boolean;
+                            };
+                            Class: Init;
+                            toString(): string;
+                            guard<This extends typeof $mol_schema_any, Value>(this: This, value: Value): Value & This["default"];
+                            cast<This extends typeof $mol_schema_any>(this: This, value: unknown): This["default"];
+                            default: InstanceType<Init>;
+                            check<This extends typeof $mol_schema_any, Value_1>(this: This, value: Value_1): value is Value_1 & This["default"];
+                            [Symbol.toStringTag]: string;
+                            [$mol_key_handle](): string;
+                            [Symbol.hasInstance]<This extends typeof $mol_schema_any, Value_2>(this: This, value: Value_2): value is Value_2 & This["default"];
+                            getPrototypeOf(o: any): any;
+                            getOwnPropertyDescriptor(o: any, p: PropertyKey): PropertyDescriptor | undefined;
+                            getOwnPropertyNames(o: any): string[];
+                            create(o: object | null): any;
+                            create(o: object | null, properties: PropertyDescriptorMap & ThisType<any>): any;
+                            defineProperty<T_1>(o: T_1, p: PropertyKey, attributes: PropertyDescriptor & ThisType<any>): T_1;
+                            defineProperties<T_1>(o: T_1, properties: PropertyDescriptorMap & ThisType<any>): T_1;
+                            seal<T_1>(o: T_1): T_1;
+                            freeze<T_1 extends Function>(f: T_1): T_1;
+                            freeze<T_1 extends {
+                                [idx: string]: U | null | undefined | object;
+                            }, U extends string | bigint | number | boolean | symbol>(o: T_1): Readonly<T_1>;
+                            freeze<T_1>(o: T_1): Readonly<T_1>;
+                            preventExtensions<T_1>(o: T_1): T_1;
+                            isSealed(o: any): boolean;
+                            isFrozen(o: any): boolean;
+                            isExtensible(o: any): boolean;
+                            keys(o: object): string[];
+                            keys(o: {}): string[];
+                            assign<T_1 extends {}, U_1>(target: T_1, source: U_1): T_1 & U_1;
+                            assign<T_1 extends {}, U_2, V>(target: T_1, source1: U_2, source2: V): T_1 & U_2 & V;
+                            assign<T_1 extends {}, U_3, V_1, W>(target: T_1, source1: U_3, source2: V_1, source3: W): T_1 & U_3 & V_1 & W;
+                            assign(target: object, ...sources: any[]): any;
+                            getOwnPropertySymbols(o: any): symbol[];
+                            is(value1: any, value2: any): boolean;
+                            setPrototypeOf(o: any, proto: object | null): any;
+                            values<T_1>(o: {
+                                [s: string]: T_1;
+                            } | ArrayLike<T_1>): T_1[];
+                            values(o: {}): any[];
+                            entries<T_1>(o: {
+                                [s: string]: T_1;
+                            } | ArrayLike<T_1>): [string, T_1][];
+                            entries(o: {}): [string, any][];
+                            getOwnPropertyDescriptors<T_1>(o: T_1): { [P in keyof T_1]: TypedPropertyDescriptor<T_1[P]>; } & {
+                                [x: string]: PropertyDescriptor;
+                            };
+                            fromEntries<T_1 = any>(entries: Iterable<readonly [PropertyKey, T_1]>): {
+                                [k: string]: T_1;
+                            };
+                            fromEntries(entries: Iterable<readonly any[]>): any;
+                            hasOwn(o: object, v: PropertyKey): boolean;
+                            groupBy<K extends PropertyKey, T>(items: Iterable<T>, keySelector: (item: T, index: number) => K): Partial<Record<K, T[]>>;
+                        })["default"][];
+                        items_vary(next?: readonly $giper_baza_vary_type[], tag?: keyof typeof $giper_baza_unit_sand_tag): readonly $giper_baza_vary_type[];
+                        splice(next: readonly $giper_baza_vary_type[], from?: number, to?: number, tag?: keyof typeof $giper_baza_unit_sand_tag): void;
+                        find(vary: $giper_baza_vary_type): $giper_baza_unit_sand | null;
+                        has(vary: $giper_baza_vary_type, next?: boolean, tag?: keyof typeof $giper_baza_unit_sand_tag): boolean;
+                        add(vary: $giper_baza_vary_type, tag?: keyof typeof $giper_baza_unit_sand_tag): void;
+                        cut(vary: $giper_baza_vary_type): void;
+                        move(from: number, to: number): void;
+                        wipe(seat: number): void;
+                        pawn_make<Pawn_1 extends typeof $giper_baza_pawn>(Pawn: Pawn_1, vary: $giper_baza_vary_type, tag?: keyof typeof $giper_baza_unit_sand_tag): InstanceType<Pawn_1>;
+                        [$mol_dev_format_head](): any[];
+                        land(): $giper_baza_land;
+                        head(): $giper_baza_link;
+                        land_link(): $giper_baza_link;
+                        link(): $giper_baza_link;
+                        toJSON(): string;
+                        cast<Pawn_1 extends typeof $giper_baza_pawn>(Pawn: Pawn_1): InstanceType<Pawn_1>;
+                        pawns<Pawn_1 extends typeof $giper_baza_pawn>(Pawn: Pawn_1 | null): readonly InstanceType<Pawn_1>[];
+                        units(): $giper_baza_unit_sand[];
+                        units_of(peer: $giper_baza_link | null): $giper_baza_unit_sand[];
+                        meta(next?: $giper_baza_link): $giper_baza_link | null;
+                        meta_of(peer: $giper_baza_link | null): $giper_baza_link | null;
+                        filled(): boolean;
+                        can_change(): boolean;
+                        last_change(): $mol_time_moment | null;
+                        authors(): $giper_baza_auth_pass[];
+                        get $(): $;
+                        set $(next: $);
+                        destructor(): void;
+                        toString(): string;
+                        [Symbol.toStringTag]: string;
+                        [$mol_ambient_ref]: $;
+                        [Symbol.dispose](): void;
+                    };
+                    Item: Init extends typeof $mol_schema_any ? Init : {
+                        new (value?: any): {
+                            constructor: Function;
+                            toString(): string;
+                            toLocaleString(): string;
+                            valueOf(): Object;
+                            hasOwnProperty(v: PropertyKey): boolean;
+                            isPrototypeOf(v: Object): boolean;
+                            propertyIsEnumerable(v: PropertyKey): boolean;
+                        };
+                        Class: Init;
+                        toString(): string;
+                        guard<This extends typeof $mol_schema_any, Value>(this: This, value: Value): Value & This["default"];
+                        cast<This extends typeof $mol_schema_any>(this: This, value: unknown): This["default"];
+                        default: InstanceType<Init>;
+                        check<This extends typeof $mol_schema_any, Value_1>(this: This, value: Value_1): value is Value_1 & This["default"];
+                        [Symbol.toStringTag]: string;
+                        [$mol_key_handle](): string;
+                        [Symbol.hasInstance]<This extends typeof $mol_schema_any, Value_2>(this: This, value: Value_2): value is Value_2 & This["default"];
+                        getPrototypeOf(o: any): any;
+                        getOwnPropertyDescriptor(o: any, p: PropertyKey): PropertyDescriptor | undefined;
+                        getOwnPropertyNames(o: any): string[];
+                        create(o: object | null): any;
+                        create(o: object | null, properties: PropertyDescriptorMap & ThisType<any>): any;
+                        defineProperty<T_1>(o: T_1, p: PropertyKey, attributes: PropertyDescriptor & ThisType<any>): T_1;
+                        defineProperties<T_1>(o: T_1, properties: PropertyDescriptorMap & ThisType<any>): T_1;
+                        seal<T_1>(o: T_1): T_1;
+                        freeze<T_1 extends Function>(f: T_1): T_1;
+                        freeze<T_1 extends {
+                            [idx: string]: U | null | undefined | object;
+                        }, U extends string | bigint | number | boolean | symbol>(o: T_1): Readonly<T_1>;
+                        freeze<T_1>(o: T_1): Readonly<T_1>;
+                        preventExtensions<T_1>(o: T_1): T_1;
+                        isSealed(o: any): boolean;
+                        isFrozen(o: any): boolean;
+                        isExtensible(o: any): boolean;
+                        keys(o: object): string[];
+                        keys(o: {}): string[];
+                        assign<T_1 extends {}, U_1>(target: T_1, source: U_1): T_1 & U_1;
+                        assign<T_1 extends {}, U_2, V>(target: T_1, source1: U_2, source2: V): T_1 & U_2 & V;
+                        assign<T_1 extends {}, U_3, V_1, W>(target: T_1, source1: U_3, source2: V_1, source3: W): T_1 & U_3 & V_1 & W;
+                        assign(target: object, ...sources: any[]): any;
+                        getOwnPropertySymbols(o: any): symbol[];
+                        is(value1: any, value2: any): boolean;
+                        setPrototypeOf(o: any, proto: object | null): any;
+                        values<T_1>(o: {
+                            [s: string]: T_1;
+                        } | ArrayLike<T_1>): T_1[];
+                        values(o: {}): any[];
+                        entries<T_1>(o: {
+                            [s: string]: T_1;
+                        } | ArrayLike<T_1>): [string, T_1][];
+                        entries(o: {}): [string, any][];
+                        getOwnPropertyDescriptors<T_1>(o: T_1): { [P in keyof T_1]: TypedPropertyDescriptor<T_1[P]>; } & {
+                            [x: string]: PropertyDescriptor;
+                        };
+                        fromEntries<T_1 = any>(entries: Iterable<readonly [PropertyKey, T_1]>): {
+                            [k: string]: T_1;
+                        };
+                        fromEntries(entries: Iterable<readonly any[]>): any;
+                        hasOwn(o: object, v: PropertyKey): boolean;
+                        groupBy<K extends PropertyKey, T>(items: Iterable<T>, keySelector: (item: T, index: number) => K): Partial<Record<K, T[]>>;
+                    };
+                    toString(): any;
+                    tag: keyof typeof $giper_baza_unit_sand_tag;
+                    of<Init extends new (...args: any[]) => any>(init: Init): /*elided*/ any;
+                    meta: null | $giper_baza_link;
+                    make<This extends typeof $mol_object>(this: This, config: Partial<InstanceType<This>>): InstanceType<This>;
+                    $: $;
+                    create<Instance>(this: new (init?: (instance: any) => void) => Instance, init?: (instance: $mol_type_writable<Instance>) => void): Instance;
+                    toJSON(): any;
+                    destructor(): void;
+                    [Symbol.toPrimitive](): any;
+                    [$mol_key_handle](): any;
+                };
+                meta: null | $giper_baza_link;
+                make<This extends typeof $mol_object>(this: This, config: Partial<InstanceType<This>>): InstanceType<This>;
+                $: $;
+                create<Instance>(this: new (init?: (instance: any) => void) => Instance, init?: (instance: $mol_type_writable<Instance>) => void): Instance;
+                toJSON(): any;
+                destructor(): void;
+                [Symbol.toPrimitive](): any;
+                [$mol_key_handle](): any;
+            };
+        };
+    };
+    export class $bog_basket_shop extends $bog_basket_shop_base {
+    }
+    export type $bog_basket_shop_point = {
+        title: string;
+        address: string;
+        goods: {
+            title: string;
+            price: number;
+            got: number;
+            need: number;
+        }[];
+    };
     const $bog_basket_home_base: Omit<typeof $giper_baza_dict, "prototype"> & {
         new (...args: any[]): $mol_type_override<$giper_baza_dict, {
             readonly Drives: (auto?: any) => {
@@ -48972,11 +49360,18 @@ declare namespace $ {
     export function $bog_basket_got(point: $bog_basket_point, good: $bog_basket_good): number;
     export function $bog_basket_need(point: $bog_basket_point, good: $bog_basket_good): number;
     export function $bog_basket_kits(drive: $bog_basket_drive, point: $bog_basket_point): number;
+    export function $bog_basket_tier(land: $giper_baza_land, lord: $giper_baza_link): number & {
+        $giper_baza_rank: number;
+    };
+    export function $bog_basket_total(point: $bog_basket_point, goods: readonly $bog_basket_good[]): number;
     export function $bog_basket_lack(drive: $bog_basket_drive, point: $bog_basket_point): $bog_basket_good[];
     export function $bog_basket_drive_make($: $, title: string): $bog_basket_drive;
     export function $bog_basket_good_make(drive: $bog_basket_drive, title: string, weight: number, kit: number, price: number): $bog_basket_good;
     export function $bog_basket_point_make(drive: $bog_basket_drive, title: string, address: string, kits: number): $bog_basket_point;
     export function $bog_basket_shift_make(point: $bog_basket_point, volunteer: string, started: $mol_time_moment): $bog_basket_shift;
+    export function $bog_basket_shop_publish(drive: $bog_basket_drive, updated: $mol_time_moment): void;
+    export function $bog_basket_buy(goods: $bog_basket_shop_point['goods'], money: number): number[];
+    export function $bog_basket_csv(drive: $bog_basket_drive): string;
     export function $bog_basket_admit(drive: $bog_basket_drive, pass: $giper_baza_auth_pass, name: string): void;
     export function $bog_basket_dismiss(drive: $bog_basket_drive, lord: $giper_baza_link): void;
     export const $bog_basket_example_goods: {
@@ -49324,6 +49719,1000 @@ declare namespace $ {
 
 declare namespace $ {
 
+	type $mol_view__sub_bog_basket_bar_1 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_view__sub_bog_basket_bar_2 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_view__sub_bog_basket_bar_3 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_portion__portion_bog_basket_bar_4 = $mol_type_enforce<
+		ReturnType< $bog_basket_bar['progress'] >
+		,
+		ReturnType< $mol_portion['portion'] >
+	>
+	export class $bog_basket_bar extends $mol_view {
+		title( ): string
+		Title( ): $mol_view
+		total_text( ): string
+		Total( ): $mol_view
+		Head( ): $mol_view
+		progress( ): number
+		Progress( ): $mol_portion
+		got( ): number
+		need( ): number
+		sub( ): readonly(any)[]
+	}
+	
+}
+
+//# sourceMappingURL=bar.view.tree.d.ts.map
+declare namespace $.$$ {
+    class $bog_basket_bar extends $.$bog_basket_bar {
+        total_text(): string;
+        progress(): number;
+    }
+}
+
+declare namespace $.$$ {
+}
+
+declare namespace $ {
+
+	type $mol_link__title_bog_basket_office_1 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_link['title'] >
+	>
+	type $mol_link__arg_bog_basket_office_2 = $mol_type_enforce<
+		({ 
+			'screen': string,
+			'point': any,
+			'admit': any,
+		}) 
+		,
+		ReturnType< $mol_link['arg'] >
+	>
+	type $mol_link__title_bog_basket_office_3 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_link['title'] >
+	>
+	type $mol_link__arg_bog_basket_office_4 = $mol_type_enforce<
+		({ 
+			'screen': string,
+			'point': any,
+			'admit': any,
+		}) 
+		,
+		ReturnType< $mol_link['arg'] >
+	>
+	type $mol_link__title_bog_basket_office_5 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_link['title'] >
+	>
+	type $mol_link__arg_bog_basket_office_6 = $mol_type_enforce<
+		({ 
+			'screen': string,
+			'point': any,
+			'admit': any,
+		}) 
+		,
+		ReturnType< $mol_link['arg'] >
+	>
+	type $mol_link__title_bog_basket_office_7 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_link['title'] >
+	>
+	type $mol_link__arg_bog_basket_office_8 = $mol_type_enforce<
+		({ 
+			'drive': string,
+			'screen': any,
+			'point': any,
+			'admit': any,
+		}) 
+		,
+		ReturnType< $mol_link['arg'] >
+	>
+	type $mol_view__sub_bog_basket_office_9 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_paragraph__title_bog_basket_office_10 = $mol_type_enforce<
+		ReturnType< $bog_basket_office['total_text'] >
+		,
+		ReturnType< $mol_paragraph['title'] >
+	>
+	type $bog_basket_bar__title_bog_basket_office_11 = $mol_type_enforce<
+		ReturnType< $bog_basket_office['good_title'] >
+		,
+		ReturnType< $bog_basket_bar['title'] >
+	>
+	type $bog_basket_bar__got_bog_basket_office_12 = $mol_type_enforce<
+		ReturnType< $bog_basket_office['good_got'] >
+		,
+		ReturnType< $bog_basket_bar['got'] >
+	>
+	type $bog_basket_bar__need_bog_basket_office_13 = $mol_type_enforce<
+		ReturnType< $bog_basket_office['good_need'] >
+		,
+		ReturnType< $bog_basket_bar['need'] >
+	>
+	type $mol_list__rows_bog_basket_office_14 = $mol_type_enforce<
+		ReturnType< $bog_basket_office['good_rows'] >
+		,
+		ReturnType< $mol_list['rows'] >
+	>
+	type $mol_labeler__title_bog_basket_office_15 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_labeler['title'] >
+	>
+	type $mol_labeler__content_bog_basket_office_16 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_labeler['content'] >
+	>
+	type $bog_basket_bar__title_bog_basket_office_17 = $mol_type_enforce<
+		ReturnType< $bog_basket_office['point_title'] >
+		,
+		ReturnType< $bog_basket_bar['title'] >
+	>
+	type $bog_basket_bar__got_bog_basket_office_18 = $mol_type_enforce<
+		ReturnType< $bog_basket_office['point_kits'] >
+		,
+		ReturnType< $bog_basket_bar['got'] >
+	>
+	type $bog_basket_bar__need_bog_basket_office_19 = $mol_type_enforce<
+		ReturnType< $bog_basket_office['point_plan'] >
+		,
+		ReturnType< $bog_basket_bar['need'] >
+	>
+	type $mol_view__sub_bog_basket_office_20 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_link__arg_bog_basket_office_21 = $mol_type_enforce<
+		ReturnType< $bog_basket_office['point_arg'] >
+		,
+		ReturnType< $mol_link['arg'] >
+	>
+	type $mol_link__sub_bog_basket_office_22 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_link['sub'] >
+	>
+	type $mol_list__rows_bog_basket_office_23 = $mol_type_enforce<
+		ReturnType< $bog_basket_office['point_rows'] >
+		,
+		ReturnType< $mol_list['rows'] >
+	>
+	type $mol_labeler__title_bog_basket_office_24 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_labeler['title'] >
+	>
+	type $mol_labeler__content_bog_basket_office_25 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_labeler['content'] >
+	>
+	type $mol_string__hint_bog_basket_office_26 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_string['hint'] >
+	>
+	type $mol_string__value_bog_basket_office_27 = $mol_type_enforce<
+		ReturnType< $bog_basket_office['point_new_title'] >
+		,
+		ReturnType< $mol_string['value'] >
+	>
+	type $mol_string__submit_bog_basket_office_28 = $mol_type_enforce<
+		ReturnType< $bog_basket_office['point_add'] >
+		,
+		ReturnType< $mol_string['submit'] >
+	>
+	type $mol_button_major__title_bog_basket_office_29 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_major['title'] >
+	>
+	type $mol_button_major__enabled_bog_basket_office_30 = $mol_type_enforce<
+		ReturnType< $bog_basket_office['point_add_enabled'] >
+		,
+		ReturnType< $mol_button_major['enabled'] >
+	>
+	type $mol_button_major__click_bog_basket_office_31 = $mol_type_enforce<
+		ReturnType< $bog_basket_office['point_add'] >
+		,
+		ReturnType< $mol_button_major['click'] >
+	>
+	type $mol_view__sub_bog_basket_office_32 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_button_download__title_bog_basket_office_33 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_download['title'] >
+	>
+	type $mol_button_download__file_name_bog_basket_office_34 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_download['file_name'] >
+	>
+	type $mol_button_download__blob_bog_basket_office_35 = $mol_type_enforce<
+		ReturnType< $bog_basket_office['csv_blob'] >
+		,
+		ReturnType< $mol_button_download['blob'] >
+	>
+	export class $bog_basket_office extends $mol_page {
+		drive_title( ): string
+		Status( ): $giper_baza_status
+		Team_link( ): $mol_link
+		Kit_link( ): $mol_link
+		Count_link( ): $mol_link
+		Drives_link( ): $mol_link
+		Nav( ): $mol_view
+		total_text( ): string
+		Total( ): $mol_paragraph
+		good_title( id: any): string
+		good_got( id: any): number
+		good_need( id: any): number
+		Good( id: any): $bog_basket_bar
+		good_rows( ): readonly(any)[]
+		Goods_rows( ): $mol_list
+		Goods( ): $mol_labeler
+		point_arg( id: any): Record<string, any>
+		point_title( id: any): string
+		point_kits( id: any): number
+		point_plan( id: any): number
+		Point_bar( id: any): $bog_basket_bar
+		point_note( id: any): string
+		Point_note( id: any): $mol_view
+		Point( id: any): $mol_link
+		point_rows( ): readonly(any)[]
+		Points_rows( ): $mol_list
+		Points( ): $mol_labeler
+		point_new_title( next?: string ): string
+		point_add( next?: any ): any
+		Point_new_title( ): $mol_string
+		point_add_enabled( ): boolean
+		Point_new_add( ): $mol_button_major
+		Point_new( ): $mol_view
+		csv_blob( ): any
+		Csv( ): $mol_button_download
+		drive( ): $bog_basket_drive
+		title( ): ReturnType< $bog_basket_office['drive_title'] >
+		tools( ): readonly(any)[]
+		body( ): readonly(any)[]
+	}
+	
+}
+
+//# sourceMappingURL=office.view.tree.d.ts.map
+declare namespace $.$$ {
+    class $bog_basket_office extends $.$bog_basket_office {
+        good(id: string): $bog_basket_good;
+        point(id: string): $bog_basket_point;
+        points(): readonly $bog_basket_point[];
+        auto(): void;
+        drive_title(): string;
+        good_rows(): $.$bog_basket_bar[];
+        good_title(id: string): string;
+        good_got(id: string): number;
+        good_need(id: string): number;
+        point_rows(): $.$mol_link[];
+        point_arg(id: string): {
+            screen: string;
+            point: string;
+            admit: null;
+        };
+        point_title(id: string): string;
+        point_kits(id: string): number;
+        point_plan(id: string): number;
+        point_note(id: string): string;
+        total_text(): string;
+        point_add_enabled(): boolean;
+        point_add(): void;
+        csv_blob(): Blob;
+    }
+}
+
+declare namespace $.$$ {
+}
+
+declare namespace $ {
+
+	type $mol_link__hint_bog_basket_team_1 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_link['hint'] >
+	>
+	type $mol_link__arg_bog_basket_team_2 = $mol_type_enforce<
+		({ 
+			'screen': any,
+			'admit': any,
+		}) 
+		,
+		ReturnType< $mol_link['arg'] >
+	>
+	type $mol_link__sub_bog_basket_team_3 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_link['sub'] >
+	>
+	type $mol_paragraph__title_bog_basket_team_4 = $mol_type_enforce<
+		ReturnType< $bog_basket_team['pending_text'] >
+		,
+		ReturnType< $mol_paragraph['title'] >
+	>
+	type $mol_string__hint_bog_basket_team_5 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_string['hint'] >
+	>
+	type $mol_string__value_bog_basket_team_6 = $mol_type_enforce<
+		ReturnType< $bog_basket_team['name'] >
+		,
+		ReturnType< $mol_string['value'] >
+	>
+	type $mol_string__submit_bog_basket_team_7 = $mol_type_enforce<
+		ReturnType< $bog_basket_team['admit_run'] >
+		,
+		ReturnType< $mol_string['submit'] >
+	>
+	type $mol_button_major__title_bog_basket_team_8 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_major['title'] >
+	>
+	type $mol_button_major__enabled_bog_basket_team_9 = $mol_type_enforce<
+		ReturnType< $bog_basket_team['admit_enabled'] >
+		,
+		ReturnType< $mol_button_major['enabled'] >
+	>
+	type $mol_button_major__click_bog_basket_team_10 = $mol_type_enforce<
+		ReturnType< $bog_basket_team['admit_run'] >
+		,
+		ReturnType< $mol_button_major['click'] >
+	>
+	type $mol_list__rows_bog_basket_team_11 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_list['rows'] >
+	>
+	type $mol_string__hint_bog_basket_team_12 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_string['hint'] >
+	>
+	type $mol_string__value_bog_basket_team_13 = $mol_type_enforce<
+		ReturnType< $bog_basket_team['paste'] >
+		,
+		ReturnType< $mol_string['value'] >
+	>
+	type $mol_labeler__title_bog_basket_team_14 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_labeler['title'] >
+	>
+	type $mol_labeler__content_bog_basket_team_15 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_labeler['content'] >
+	>
+	type $mol_paragraph__title_bog_basket_team_16 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_paragraph['title'] >
+	>
+	type $bog_qr__uri_bog_basket_team_17 = $mol_type_enforce<
+		ReturnType< $bog_basket_team['invite_link'] >
+		,
+		ReturnType< $bog_qr['uri'] >
+	>
+	type $bog_qr__gradient_stops_bog_basket_team_18 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $bog_qr['gradient_stops'] >
+	>
+	type $mol_button_copy__title_bog_basket_team_19 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_copy['title'] >
+	>
+	type $mol_button_copy__text_bog_basket_team_20 = $mol_type_enforce<
+		ReturnType< $bog_basket_team['invite_link'] >
+		,
+		ReturnType< $mol_button_copy['text'] >
+	>
+	type $mol_list__rows_bog_basket_team_21 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_list['rows'] >
+	>
+	type $mol_labeler__title_bog_basket_team_22 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_labeler['title'] >
+	>
+	type $mol_labeler__content_bog_basket_team_23 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_labeler['content'] >
+	>
+	type $mol_string__value_bog_basket_team_24 = $mol_type_enforce<
+		ReturnType< $bog_basket_team['person_name'] >
+		,
+		ReturnType< $mol_string['value'] >
+	>
+	type $mol_view__sub_bog_basket_team_25 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_button_minor__title_bog_basket_team_26 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_minor['title'] >
+	>
+	type $mol_button_minor__click_bog_basket_team_27 = $mol_type_enforce<
+		ReturnType< $bog_basket_team['dismiss'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	type $mol_button_minor__title_bog_basket_team_28 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_minor['title'] >
+	>
+	type $mol_button_minor__click_bog_basket_team_29 = $mol_type_enforce<
+		ReturnType< $bog_basket_team['restore'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	type $mol_view__sub_bog_basket_team_30 = $mol_type_enforce<
+		ReturnType< $bog_basket_team['person_sub'] >
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_list__rows_bog_basket_team_31 = $mol_type_enforce<
+		ReturnType< $bog_basket_team['people_rows'] >
+		,
+		ReturnType< $mol_list['rows'] >
+	>
+	type $mol_labeler__title_bog_basket_team_32 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_labeler['title'] >
+	>
+	type $mol_labeler__content_bog_basket_team_33 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_labeler['content'] >
+	>
+	type $mol_paragraph__title_bog_basket_team_34 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_paragraph['title'] >
+	>
+	export class $bog_basket_team extends $mol_page {
+		Close_icon( ): $mol_icon_close
+		Close( ): $mol_link
+		pending_text( ): string
+		Pending_text( ): $mol_paragraph
+		name( next?: string ): string
+		admit_run( next?: any ): any
+		Name( ): $mol_string
+		admit_enabled( ): boolean
+		Admit( ): $mol_button_major
+		Pending( ): $mol_list
+		paste( next?: string ): string
+		Paste_field( ): $mol_string
+		Paste( ): $mol_labeler
+		Invite_hint( ): $mol_paragraph
+		Invite_code( ): $bog_qr
+		Invite_copy( ): $mol_button_copy
+		Invite_list( ): $mol_list
+		Invite( ): $mol_labeler
+		person_name( id: any, next?: string ): string
+		Person_name( id: any): $mol_string
+		person_status( id: any): string
+		Person_status( id: any): $mol_view
+		dismiss( id: any, next?: any ): any
+		Dismiss( id: any): $mol_button_minor
+		restore( id: any, next?: any ): any
+		Restore( id: any): $mol_button_minor
+		person_sub( id: any): readonly(any)[]
+		Person( id: any): $mol_view
+		people_rows( ): readonly(any)[]
+		People_rows( ): $mol_list
+		People( ): $mol_labeler
+		Warning( ): $mol_paragraph
+		blocks( ): readonly(any)[]
+		drive( ): $bog_basket_drive
+		admit( next?: string ): string
+		invite_link( ): string
+		title( ): string
+		tools( ): readonly(any)[]
+		body( ): ReturnType< $bog_basket_team['blocks'] >
+	}
+	
+}
+
+//# sourceMappingURL=team.view.tree.d.ts.map
+declare namespace $.$$ {
+    class $bog_basket_team extends $.$bog_basket_team {
+        pass(): $giper_baza_auth_pass | null;
+        paste(next?: string): string;
+        blocks(): ($.$mol_paragraph | $.$mol_list | $mol_labeler)[];
+        admitted(lord: string): boolean;
+        admit_enabled(): boolean;
+        pending_text(): "Ссылка повреждена, попросите волонтёра прислать её ещё раз." | "Этот волонтёр уже допущен." | "Волонтёр просит допуск.";
+        lords(): string[];
+        people_rows(): $mol_view[];
+        person_name(lord: string, next?: string): string;
+        person_status(lord: string): "допущен" | "отозван";
+        person_sub(lord: string): ($mol_view | $.$mol_string)[];
+        dismiss(lord: string): void;
+        restore(lord: string): void;
+        admit_run(): void;
+    }
+}
+
+declare namespace $.$$ {
+}
+
+declare namespace $ {
+
+	type $mol_link__hint_bog_basket_kit_1 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_link['hint'] >
+	>
+	type $mol_link__arg_bog_basket_kit_2 = $mol_type_enforce<
+		({ 
+			'screen': any,
+		}) 
+		,
+		ReturnType< $mol_link['arg'] >
+	>
+	type $mol_link__sub_bog_basket_kit_3 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_link['sub'] >
+	>
+	type $mol_paragraph__title_bog_basket_kit_4 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_paragraph['title'] >
+	>
+	type $mol_string__hint_bog_basket_kit_5 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_string['hint'] >
+	>
+	type $mol_string__value_bog_basket_kit_6 = $mol_type_enforce<
+		ReturnType< $bog_basket_kit['good_title'] >
+		,
+		ReturnType< $mol_string['value'] >
+	>
+	type $mol_button_minor__hint_bog_basket_kit_7 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_minor['hint'] >
+	>
+	type $mol_button_minor__click_bog_basket_kit_8 = $mol_type_enforce<
+		ReturnType< $bog_basket_kit['drop'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	type $mol_button_minor__sub_bog_basket_kit_9 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_minor['sub'] >
+	>
+	type $mol_view__sub_bog_basket_kit_10 = $mol_type_enforce<
+		ReturnType< $bog_basket_kit['row_head'] >
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_number__value_min_bog_basket_kit_11 = $mol_type_enforce<
+		number
+		,
+		ReturnType< $mol_number['value_min'] >
+	>
+	type $mol_number__value_bog_basket_kit_12 = $mol_type_enforce<
+		ReturnType< $bog_basket_kit['good_kit'] >
+		,
+		ReturnType< $mol_number['value'] >
+	>
+	type $mol_labeler__title_bog_basket_kit_13 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_labeler['title'] >
+	>
+	type $mol_labeler__content_bog_basket_kit_14 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_labeler['content'] >
+	>
+	type $mol_number__value_min_bog_basket_kit_15 = $mol_type_enforce<
+		number
+		,
+		ReturnType< $mol_number['value_min'] >
+	>
+	type $mol_number__precision_bog_basket_kit_16 = $mol_type_enforce<
+		number
+		,
+		ReturnType< $mol_number['precision'] >
+	>
+	type $mol_number__value_bog_basket_kit_17 = $mol_type_enforce<
+		ReturnType< $bog_basket_kit['good_weight'] >
+		,
+		ReturnType< $mol_number['value'] >
+	>
+	type $mol_labeler__title_bog_basket_kit_18 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_labeler['title'] >
+	>
+	type $mol_labeler__content_bog_basket_kit_19 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_labeler['content'] >
+	>
+	type $mol_number__value_min_bog_basket_kit_20 = $mol_type_enforce<
+		number
+		,
+		ReturnType< $mol_number['value_min'] >
+	>
+	type $mol_number__value_bog_basket_kit_21 = $mol_type_enforce<
+		ReturnType< $bog_basket_kit['good_price'] >
+		,
+		ReturnType< $mol_number['value'] >
+	>
+	type $mol_labeler__title_bog_basket_kit_22 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_labeler['title'] >
+	>
+	type $mol_labeler__content_bog_basket_kit_23 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_labeler['content'] >
+	>
+	type $mol_view__sub_bog_basket_kit_24 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_list__rows_bog_basket_kit_25 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_list['rows'] >
+	>
+	type $mol_list__rows_bog_basket_kit_26 = $mol_type_enforce<
+		ReturnType< $bog_basket_kit['rows'] >
+		,
+		ReturnType< $mol_list['rows'] >
+	>
+	type $mol_button_major__title_bog_basket_kit_27 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_major['title'] >
+	>
+	type $mol_button_major__click_bog_basket_kit_28 = $mol_type_enforce<
+		ReturnType< $bog_basket_kit['add'] >
+		,
+		ReturnType< $mol_button_major['click'] >
+	>
+	export class $bog_basket_kit extends $mol_page {
+		Close_icon( ): $mol_icon_close
+		Close( ): $mol_link
+		Hint( ): $mol_paragraph
+		good_title( id: any, next?: string ): string
+		Good_title( id: any): $mol_string
+		drop( id: any, next?: any ): any
+		Drop_icon( id: any): $mol_icon_close
+		Drop( id: any): $mol_button_minor
+		row_head( id: any): readonly(any)[]
+		Row_head( id: any): $mol_view
+		good_kit( id: any, next?: number ): number
+		Kit_number( id: any): $mol_number
+		Kit( id: any): $mol_labeler
+		good_weight( id: any, next?: number ): number
+		Weight_number( id: any): $mol_number
+		Weight( id: any): $mol_labeler
+		good_price( id: any, next?: number ): number
+		Price_number( id: any): $mol_number
+		Price( id: any): $mol_labeler
+		Numbers( id: any): $mol_view
+		Row( id: any): $mol_list
+		rows( ): readonly(any)[]
+		Rows( ): $mol_list
+		add( next?: any ): any
+		Add( ): $mol_button_major
+		drive( ): $bog_basket_drive
+		title( ): string
+		tools( ): readonly(any)[]
+		body( ): readonly(any)[]
+	}
+	
+}
+
+//# sourceMappingURL=kit.view.tree.d.ts.map
+declare namespace $.$$ {
+    class $bog_basket_kit extends $.$bog_basket_kit {
+        good(id: string): $bog_basket_good;
+        rows(): $.$mol_list[];
+        row_head(id: string): ($mol_button_minor | $.$mol_string)[];
+        droppable(id: string): boolean;
+        good_title(id: string, next?: string): string;
+        good_kit(id: string, next?: number): number;
+        good_weight(id: string, next?: number): number;
+        good_price(id: string, next?: number): number;
+        add(): void;
+        drop(id: string): void;
+    }
+}
+
+declare namespace $.$$ {
+}
+
+declare namespace $ {
+
+	type $mol_link__hint_bog_basket_spot_1 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_link['hint'] >
+	>
+	type $mol_link__arg_bog_basket_spot_2 = $mol_type_enforce<
+		({ 
+			'screen': any,
+			'point': any,
+		}) 
+		,
+		ReturnType< $mol_link['arg'] >
+	>
+	type $mol_link__sub_bog_basket_spot_3 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_link['sub'] >
+	>
+	type $mol_string__hint_bog_basket_spot_4 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_string['hint'] >
+	>
+	type $mol_string__value_bog_basket_spot_5 = $mol_type_enforce<
+		ReturnType< $bog_basket_spot['point_title'] >
+		,
+		ReturnType< $mol_string['value'] >
+	>
+	type $mol_string__hint_bog_basket_spot_6 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_string['hint'] >
+	>
+	type $mol_string__value_bog_basket_spot_7 = $mol_type_enforce<
+		ReturnType< $bog_basket_spot['point_address'] >
+		,
+		ReturnType< $mol_string['value'] >
+	>
+	type $mol_number__value_min_bog_basket_spot_8 = $mol_type_enforce<
+		number
+		,
+		ReturnType< $mol_number['value_min'] >
+	>
+	type $mol_number__value_bog_basket_spot_9 = $mol_type_enforce<
+		ReturnType< $bog_basket_spot['point_kits'] >
+		,
+		ReturnType< $mol_number['value'] >
+	>
+	type $mol_labeler__title_bog_basket_spot_10 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_labeler['title'] >
+	>
+	type $mol_labeler__content_bog_basket_spot_11 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_labeler['content'] >
+	>
+	type $mol_list__rows_bog_basket_spot_12 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_list['rows'] >
+	>
+	type $bog_basket_bar__title_bog_basket_spot_13 = $mol_type_enforce<
+		ReturnType< $bog_basket_spot['good_title'] >
+		,
+		ReturnType< $bog_basket_bar['title'] >
+	>
+	type $bog_basket_bar__got_bog_basket_spot_14 = $mol_type_enforce<
+		ReturnType< $bog_basket_spot['good_got'] >
+		,
+		ReturnType< $bog_basket_bar['got'] >
+	>
+	type $bog_basket_bar__need_bog_basket_spot_15 = $mol_type_enforce<
+		ReturnType< $bog_basket_spot['good_need'] >
+		,
+		ReturnType< $bog_basket_bar['need'] >
+	>
+	type $mol_list__rows_bog_basket_spot_16 = $mol_type_enforce<
+		ReturnType< $bog_basket_spot['good_rows'] >
+		,
+		ReturnType< $mol_list['rows'] >
+	>
+	type $mol_labeler__title_bog_basket_spot_17 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_labeler['title'] >
+	>
+	type $mol_labeler__content_bog_basket_spot_18 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_labeler['content'] >
+	>
+	type $mol_paragraph__title_bog_basket_spot_19 = $mol_type_enforce<
+		ReturnType< $bog_basket_spot['shift_text'] >
+		,
+		ReturnType< $mol_paragraph['title'] >
+	>
+	type $mol_list__rows_bog_basket_spot_20 = $mol_type_enforce<
+		ReturnType< $bog_basket_spot['shift_rows'] >
+		,
+		ReturnType< $mol_list['rows'] >
+	>
+	type $mol_labeler__title_bog_basket_spot_21 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_labeler['title'] >
+	>
+	type $mol_labeler__content_bog_basket_spot_22 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_labeler['content'] >
+	>
+	type $mol_paragraph__title_bog_basket_spot_23 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_paragraph['title'] >
+	>
+	type $bog_qr__uri_bog_basket_spot_24 = $mol_type_enforce<
+		ReturnType< $bog_basket_spot['buyer_link'] >
+		,
+		ReturnType< $bog_qr['uri'] >
+	>
+	type $bog_qr__gradient_stops_bog_basket_spot_25 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $bog_qr['gradient_stops'] >
+	>
+	type $mol_link__uri_bog_basket_spot_26 = $mol_type_enforce<
+		ReturnType< $bog_basket_spot['buyer_link'] >
+		,
+		ReturnType< $mol_link['uri'] >
+	>
+	type $mol_link__target_bog_basket_spot_27 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_link['target'] >
+	>
+	type $mol_link__title_bog_basket_spot_28 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_link['title'] >
+	>
+	type $mol_list__rows_bog_basket_spot_29 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_list['rows'] >
+	>
+	type $mol_labeler__title_bog_basket_spot_30 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_labeler['title'] >
+	>
+	type $mol_labeler__content_bog_basket_spot_31 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_labeler['content'] >
+	>
+	type $mol_button_minor__title_bog_basket_spot_32 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_minor['title'] >
+	>
+	type $mol_button_minor__click_bog_basket_spot_33 = $mol_type_enforce<
+		ReturnType< $bog_basket_spot['drop'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	export class $bog_basket_spot extends $mol_page {
+		point_title_text( ): string
+		Close_icon( ): $mol_icon_close
+		Close( ): $mol_link
+		point_title( next?: string ): string
+		Title_field( ): $mol_string
+		point_address( next?: string ): string
+		Address( ): $mol_string
+		point_kits( next?: number ): number
+		Kits( ): $mol_number
+		Kits_label( ): $mol_labeler
+		Form( ): $mol_list
+		good_title( id: any): string
+		good_got( id: any): number
+		good_need( id: any): number
+		Good( id: any): $bog_basket_bar
+		good_rows( ): readonly(any)[]
+		Goods_rows( ): $mol_list
+		Goods( ): $mol_labeler
+		shift_text( id: any): string
+		Shift( id: any): $mol_paragraph
+		shift_rows( ): readonly(any)[]
+		Shifts_rows( ): $mol_list
+		Shifts( ): $mol_labeler
+		Buyer_hint( ): $mol_paragraph
+		Buyer_code( ): $bog_qr
+		Buyer_open( ): $mol_link
+		Buyer_list( ): $mol_list
+		Buyer( ): $mol_labeler
+		drop( next?: any ): any
+		Drop( ): $mol_button_minor
+		blocks( ): readonly(any)[]
+		drive( ): $bog_basket_drive
+		point( ): $bog_basket_point
+		buyer_link( ): string
+		drop_done( next?: any ): any
+		title( ): ReturnType< $bog_basket_spot['point_title_text'] >
+		tools( ): readonly(any)[]
+		body( ): ReturnType< $bog_basket_spot['blocks'] >
+	}
+	
+}
+
+//# sourceMappingURL=spot.view.tree.d.ts.map
+declare namespace $.$$ {
+    class $bog_basket_spot extends $.$bog_basket_spot {
+        good(id: string): $bog_basket_good;
+        shift(id: string): $bog_basket_shift;
+        blocks(): ($mol_button_minor | $.$mol_list | $mol_labeler)[];
+        point_title_text(): string;
+        point_title(next?: string): string;
+        point_address(next?: string): string;
+        point_kits(next?: number): number;
+        good_rows(): $.$bog_basket_bar[];
+        good_title(id: string): string;
+        good_got(id: string): number;
+        good_need(id: string): number;
+        shift_rows(): $.$mol_paragraph[];
+        shift_text(id: string): string;
+        droppable(): boolean;
+        drop(): void;
+    }
+}
+
+declare namespace $.$$ {
+}
+
+declare namespace $ {
+
 	export class $mol_icon_minus extends $mol_icon {
 		path( ): string
 	}
@@ -49333,62 +50722,57 @@ declare namespace $ {
 //# sourceMappingURL=minus.view.tree.d.ts.map
 declare namespace $ {
 
-	type $mol_view__sub_bog_basket_tile_1 = $mol_type_enforce<
-		readonly(any)[]
+	type $bog_basket_bar__title_bog_basket_tile_1 = $mol_type_enforce<
+		ReturnType< $bog_basket_tile['title'] >
 		,
-		ReturnType< $mol_view['sub'] >
+		ReturnType< $bog_basket_bar['title'] >
 	>
-	type $mol_view__sub_bog_basket_tile_2 = $mol_type_enforce<
-		readonly(any)[]
+	type $bog_basket_bar__got_bog_basket_tile_2 = $mol_type_enforce<
+		ReturnType< $bog_basket_tile['got'] >
 		,
-		ReturnType< $mol_view['sub'] >
+		ReturnType< $bog_basket_bar['got'] >
 	>
-	type $mol_view__sub_bog_basket_tile_3 = $mol_type_enforce<
-		readonly(any)[]
+	type $bog_basket_bar__need_bog_basket_tile_3 = $mol_type_enforce<
+		ReturnType< $bog_basket_tile['need'] >
 		,
-		ReturnType< $mol_view['sub'] >
+		ReturnType< $bog_basket_bar['need'] >
 	>
-	type $mol_portion__portion_bog_basket_tile_4 = $mol_type_enforce<
-		ReturnType< $bog_basket_tile['progress'] >
-		,
-		ReturnType< $mol_portion['portion'] >
-	>
-	type $mol_button_minor__hint_bog_basket_tile_5 = $mol_type_enforce<
+	type $mol_button_minor__hint_bog_basket_tile_4 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_minor['hint'] >
 	>
-	type $mol_button_minor__click_bog_basket_tile_6 = $mol_type_enforce<
+	type $mol_button_minor__click_bog_basket_tile_5 = $mol_type_enforce<
 		ReturnType< $bog_basket_tile['add'] >
 		,
 		ReturnType< $mol_button_minor['click'] >
 	>
-	type $mol_button_minor__sub_bog_basket_tile_7 = $mol_type_enforce<
+	type $mol_button_minor__sub_bog_basket_tile_6 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_button_minor['sub'] >
 	>
-	type $mol_view__sub_bog_basket_tile_8 = $mol_type_enforce<
+	type $mol_view__sub_bog_basket_tile_7 = $mol_type_enforce<
 		readonly(any)[]
 		,
 		ReturnType< $mol_view['sub'] >
 	>
-	type $mol_button_minor__hint_bog_basket_tile_9 = $mol_type_enforce<
+	type $mol_button_minor__hint_bog_basket_tile_8 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_minor['hint'] >
 	>
-	type $mol_button_minor__enabled_bog_basket_tile_10 = $mol_type_enforce<
+	type $mol_button_minor__enabled_bog_basket_tile_9 = $mol_type_enforce<
 		ReturnType< $bog_basket_tile['drop_enabled'] >
 		,
 		ReturnType< $mol_button_minor['enabled'] >
 	>
-	type $mol_button_minor__click_bog_basket_tile_11 = $mol_type_enforce<
+	type $mol_button_minor__click_bog_basket_tile_10 = $mol_type_enforce<
 		ReturnType< $bog_basket_tile['drop'] >
 		,
 		ReturnType< $mol_button_minor['click'] >
 	>
-	type $mol_button_minor__sub_bog_basket_tile_12 = $mol_type_enforce<
+	type $mol_button_minor__sub_bog_basket_tile_11 = $mol_type_enforce<
 		ReturnType< $bog_basket_tile['drop_content'] >
 		,
 		ReturnType< $mol_button_minor['sub'] >
@@ -49397,12 +50781,9 @@ declare namespace $ {
 		full( ): boolean
 		add( next?: any ): any
 		title( ): string
-		Title( ): $mol_view
-		total_text( ): string
-		Total( ): $mol_view
-		Head( ): $mol_view
-		progress( ): number
-		Progress( ): $mol_portion
+		got( ): number
+		need( ): number
+		Bar( ): $bog_basket_bar
 		Add( ): $mol_button_minor
 		mine_text( ): string
 		Mine( ): $mol_view
@@ -49411,8 +50792,6 @@ declare namespace $ {
 		Drop_icon( ): $mol_icon_minus
 		drop_content( ): readonly(any)[]
 		Drop( ): $mol_button_minor
-		got( ): number
-		need( ): number
 		mine( next?: number ): number
 		attr( ): ({ 
 			'bog_basket_tile_full': ReturnType< $bog_basket_tile['full'] >,
@@ -49426,8 +50805,6 @@ declare namespace $ {
 declare namespace $.$$ {
     class $bog_basket_tile extends $.$bog_basket_tile {
         full(): boolean;
-        total_text(): string;
-        progress(): number;
         mine_text(): string;
         drop_enabled(): boolean;
         drop_content(): $mol_icon_minus[];
@@ -49546,89 +50923,414 @@ declare namespace $.$$ {
 
 declare namespace $ {
 
+	type $mol_view__sub_bog_basket_buyer_1 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_view__sub_bog_basket_buyer_2 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_button_minor__click_bog_basket_buyer_3 = $mol_type_enforce<
+		ReturnType< $bog_basket_buyer['point_open'] >
+		,
+		ReturnType< $mol_button_minor['click'] >
+	>
+	type $mol_button_minor__sub_bog_basket_buyer_4 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_button_minor['sub'] >
+	>
+	type $mol_list__rows_bog_basket_buyer_5 = $mol_type_enforce<
+		ReturnType< $bog_basket_buyer['point_rows'] >
+		,
+		ReturnType< $mol_list['rows'] >
+	>
+	type $mol_paragraph__title_bog_basket_buyer_6 = $mol_type_enforce<
+		ReturnType< $bog_basket_buyer['intro_text'] >
+		,
+		ReturnType< $mol_paragraph['title'] >
+	>
+	type $mol_number__value_min_bog_basket_buyer_7 = $mol_type_enforce<
+		number
+		,
+		ReturnType< $mol_number['value_min'] >
+	>
+	type $mol_number__precision_change_bog_basket_buyer_8 = $mol_type_enforce<
+		number
+		,
+		ReturnType< $mol_number['precision_change'] >
+	>
+	type $mol_number__value_bog_basket_buyer_9 = $mol_type_enforce<
+		ReturnType< $bog_basket_buyer['money'] >
+		,
+		ReturnType< $mol_number['value'] >
+	>
+	type $mol_labeler__title_bog_basket_buyer_10 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_labeler['title'] >
+	>
+	type $mol_labeler__content_bog_basket_buyer_11 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_labeler['content'] >
+	>
+	type $mol_view__sub_bog_basket_buyer_12 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_view__sub_bog_basket_buyer_13 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_view__sub_bog_basket_buyer_14 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_list__rows_bog_basket_buyer_15 = $mol_type_enforce<
+		ReturnType< $bog_basket_buyer['good_rows'] >
+		,
+		ReturnType< $mol_list['rows'] >
+	>
+	type $mol_paragraph__title_bog_basket_buyer_16 = $mol_type_enforce<
+		ReturnType< $bog_basket_buyer['note_text'] >
+		,
+		ReturnType< $mol_paragraph['title'] >
+	>
+	type $mol_paragraph__title_bog_basket_buyer_17 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_paragraph['title'] >
+	>
+	export class $bog_basket_buyer extends $mol_page {
+		shop_title( ): string
+		point_open( id: any, next?: any ): any
+		point_title( id: any): string
+		Point_title( id: any): $mol_view
+		point_address( id: any): string
+		Point_address( id: any): $mol_view
+		Point( id: any): $mol_button_minor
+		point_rows( ): readonly(any)[]
+		Points( ): $mol_list
+		intro_text( ): string
+		Intro( ): $mol_paragraph
+		money( next?: number ): number
+		Money_number( ): $mol_number
+		Money( ): $mol_labeler
+		good_title( id: any): string
+		Good_title( id: any): $mol_view
+		good_count( id: any): string
+		Good_count( id: any): $mol_view
+		Good( id: any): $mol_view
+		good_rows( ): readonly(any)[]
+		Goods( ): $mol_list
+		note_text( ): string
+		Note( ): $mol_paragraph
+		Refuse( ): $mol_paragraph
+		blocks( ): readonly(any)[]
+		shop( ): $bog_basket_shop
+		point_id( next?: string ): string
+		title( ): ReturnType< $bog_basket_buyer['shop_title'] >
+		body( ): ReturnType< $bog_basket_buyer['blocks'] >
+	}
+	
+}
+
+//# sourceMappingURL=buyer.view.tree.d.ts.map
+declare namespace $.$$ {
+    class $bog_basket_buyer extends $.$bog_basket_buyer {
+        shop_title(): string;
+        point_ids(): string[];
+        point(id: string): $bog_basket_shop_point | null;
+        point_current(): $bog_basket_shop_point | null;
+        blocks(): ($.$mol_paragraph | $.$mol_list | $mol_labeler)[];
+        intro_text(): string;
+        point_rows(): $mol_button_minor[];
+        point_title(id: string): string;
+        point_address(id: string): string;
+        point_open(id: string): void;
+        counts(): number[];
+        priced(): boolean;
+        good_rows(): $mol_view[];
+        good_title(index: number): string;
+        good_count(index: number): string;
+        note_text(): string;
+    }
+}
+
+declare namespace $.$$ {
+}
+
+declare namespace $ {
+
 	type $mol_paragraph__title_bog_basket_app_1 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_paragraph['title'] >
 	>
-	type $mol_paragraph__title_bog_basket_app_2 = $mol_type_enforce<
+	type $mol_link__arg_bog_basket_app_2 = $mol_type_enforce<
+		ReturnType< $bog_basket_app['drive_arg'] >
+		,
+		ReturnType< $mol_link['arg'] >
+	>
+	type $mol_link__title_bog_basket_app_3 = $mol_type_enforce<
+		ReturnType< $bog_basket_app['drive_title'] >
+		,
+		ReturnType< $mol_link['title'] >
+	>
+	type $mol_list__rows_bog_basket_app_4 = $mol_type_enforce<
+		ReturnType< $bog_basket_app['drive_rows'] >
+		,
+		ReturnType< $mol_list['rows'] >
+	>
+	type $mol_labeler__title_bog_basket_app_5 = $mol_type_enforce<
 		string
 		,
-		ReturnType< $mol_paragraph['title'] >
+		ReturnType< $mol_labeler['title'] >
 	>
-	type $mol_button_major__title_bog_basket_app_3 = $mol_type_enforce<
+	type $mol_labeler__content_bog_basket_app_6 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_labeler['content'] >
+	>
+	type $mol_string__hint_bog_basket_app_7 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_string['hint'] >
+	>
+	type $mol_string__value_bog_basket_app_8 = $mol_type_enforce<
+		ReturnType< $bog_basket_app['create_title'] >
+		,
+		ReturnType< $mol_string['value'] >
+	>
+	type $mol_string__submit_bog_basket_app_9 = $mol_type_enforce<
+		ReturnType< $bog_basket_app['create'] >
+		,
+		ReturnType< $mol_string['submit'] >
+	>
+	type $mol_button_major__title_bog_basket_app_10 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_button_major['title'] >
 	>
-	type $mol_button_major__click_bog_basket_app_4 = $mol_type_enforce<
+	type $mol_button_major__enabled_bog_basket_app_11 = $mol_type_enforce<
+		ReturnType< $bog_basket_app['create_enabled'] >
+		,
+		ReturnType< $mol_button_major['enabled'] >
+	>
+	type $mol_button_major__click_bog_basket_app_12 = $mol_type_enforce<
+		ReturnType< $bog_basket_app['create'] >
+		,
+		ReturnType< $mol_button_major['click'] >
+	>
+	type $mol_view__sub_bog_basket_app_13 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_view['sub'] >
+	>
+	type $mol_labeler__title_bog_basket_app_14 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_labeler['title'] >
+	>
+	type $mol_labeler__content_bog_basket_app_15 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_labeler['content'] >
+	>
+	type $mol_paragraph__title_bog_basket_app_16 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_paragraph['title'] >
+	>
+	type $mol_labeler__title_bog_basket_app_17 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_labeler['title'] >
+	>
+	type $mol_labeler__content_bog_basket_app_18 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_labeler['content'] >
+	>
+	type $mol_button_major__title_bog_basket_app_19 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_button_major['title'] >
+	>
+	type $mol_button_major__click_bog_basket_app_20 = $mol_type_enforce<
 		ReturnType< $bog_basket_app['example_open'] >
 		,
 		ReturnType< $mol_button_major['click'] >
 	>
-	type $mol_page__title_bog_basket_app_5 = $mol_type_enforce<
+	type $mol_labeler__title_bog_basket_app_21 = $mol_type_enforce<
+		string
+		,
+		ReturnType< $mol_labeler['title'] >
+	>
+	type $mol_labeler__content_bog_basket_app_22 = $mol_type_enforce<
+		readonly(any)[]
+		,
+		ReturnType< $mol_labeler['content'] >
+	>
+	type $mol_page__title_bog_basket_app_23 = $mol_type_enforce<
 		string
 		,
 		ReturnType< $mol_page['title'] >
 	>
-	type $mol_page__body_bog_basket_app_6 = $mol_type_enforce<
-		readonly(any)[]
+	type $mol_page__body_bog_basket_app_24 = $mol_type_enforce<
+		ReturnType< $bog_basket_app['welcome_blocks'] >
 		,
 		ReturnType< $mol_page['body'] >
 	>
-	type $bog_basket_admission__link_bog_basket_app_7 = $mol_type_enforce<
+	type $bog_basket_admission__link_bog_basket_app_25 = $mol_type_enforce<
 		ReturnType< $bog_basket_app['admission_link'] >
 		,
 		ReturnType< $bog_basket_admission['link'] >
 	>
-	type $bog_basket_points__drive_bog_basket_app_8 = $mol_type_enforce<
+	type $bog_basket_office__drive_bog_basket_app_26 = $mol_type_enforce<
+		ReturnType< $bog_basket_app['drive'] >
+		,
+		ReturnType< $bog_basket_office['drive'] >
+	>
+	type $bog_basket_team__drive_bog_basket_app_27 = $mol_type_enforce<
+		ReturnType< $bog_basket_app['drive'] >
+		,
+		ReturnType< $bog_basket_team['drive'] >
+	>
+	type $bog_basket_team__admit_bog_basket_app_28 = $mol_type_enforce<
+		ReturnType< $bog_basket_app['admit'] >
+		,
+		ReturnType< $bog_basket_team['admit'] >
+	>
+	type $bog_basket_team__invite_link_bog_basket_app_29 = $mol_type_enforce<
+		ReturnType< $bog_basket_app['invite_link'] >
+		,
+		ReturnType< $bog_basket_team['invite_link'] >
+	>
+	type $bog_basket_kit__drive_bog_basket_app_30 = $mol_type_enforce<
+		ReturnType< $bog_basket_app['drive'] >
+		,
+		ReturnType< $bog_basket_kit['drive'] >
+	>
+	type $bog_basket_spot__drive_bog_basket_app_31 = $mol_type_enforce<
+		ReturnType< $bog_basket_app['drive'] >
+		,
+		ReturnType< $bog_basket_spot['drive'] >
+	>
+	type $bog_basket_spot__point_bog_basket_app_32 = $mol_type_enforce<
+		ReturnType< $bog_basket_app['spot_point'] >
+		,
+		ReturnType< $bog_basket_spot['point'] >
+	>
+	type $bog_basket_spot__buyer_link_bog_basket_app_33 = $mol_type_enforce<
+		ReturnType< $bog_basket_app['buyer_link'] >
+		,
+		ReturnType< $bog_basket_spot['buyer_link'] >
+	>
+	type $bog_basket_spot__drop_done_bog_basket_app_34 = $mol_type_enforce<
+		ReturnType< $bog_basket_app['spot_close'] >
+		,
+		ReturnType< $bog_basket_spot['drop_done'] >
+	>
+	type $bog_basket_points__drive_bog_basket_app_35 = $mol_type_enforce<
 		ReturnType< $bog_basket_app['drive'] >
 		,
 		ReturnType< $bog_basket_points['drive'] >
 	>
-	type $bog_basket_points__start_bog_basket_app_9 = $mol_type_enforce<
+	type $bog_basket_points__chief_bog_basket_app_36 = $mol_type_enforce<
+		ReturnType< $bog_basket_app['chief'] >
+		,
+		ReturnType< $bog_basket_points['chief'] >
+	>
+	type $bog_basket_points__start_bog_basket_app_37 = $mol_type_enforce<
 		ReturnType< $bog_basket_app['shift_start'] >
 		,
 		ReturnType< $bog_basket_points['start'] >
 	>
-	type $bog_basket_counter__drive_bog_basket_app_10 = $mol_type_enforce<
+	type $bog_basket_counter__drive_bog_basket_app_38 = $mol_type_enforce<
 		ReturnType< $bog_basket_app['drive'] >
 		,
 		ReturnType< $bog_basket_counter['drive'] >
 	>
-	type $bog_basket_counter__point_bog_basket_app_11 = $mol_type_enforce<
+	type $bog_basket_counter__point_bog_basket_app_39 = $mol_type_enforce<
 		ReturnType< $bog_basket_app['shift_point'] >
 		,
 		ReturnType< $bog_basket_counter['point'] >
 	>
-	type $bog_basket_counter__shift_bog_basket_app_12 = $mol_type_enforce<
+	type $bog_basket_counter__shift_bog_basket_app_40 = $mol_type_enforce<
 		ReturnType< $bog_basket_app['shift'] >
 		,
 		ReturnType< $bog_basket_counter['shift'] >
 	>
-	type $bog_basket_counter__finish_bog_basket_app_13 = $mol_type_enforce<
+	type $bog_basket_counter__finish_bog_basket_app_41 = $mol_type_enforce<
 		ReturnType< $bog_basket_app['shift_finish'] >
 		,
 		ReturnType< $bog_basket_counter['finish'] >
 	>
+	type $bog_basket_buyer__shop_bog_basket_app_42 = $mol_type_enforce<
+		ReturnType< $bog_basket_app['shop'] >
+		,
+		ReturnType< $bog_basket_buyer['shop'] >
+	>
+	type $bog_basket_buyer__point_id_bog_basket_app_43 = $mol_type_enforce<
+		ReturnType< $bog_basket_app['spot_id'] >
+		,
+		ReturnType< $bog_basket_buyer['point_id'] >
+	>
 	export class $bog_basket_app extends $mol_book2 {
 		Theme( ): $mol_theme_auto
 		About( ): $mol_paragraph
-		Invite( ): $mol_paragraph
+		drive_arg( id: any): Record<string, any>
+		drive_title( id: any): string
+		Drive( id: any): $mol_link
+		drive_rows( ): readonly(any)[]
+		Drives_rows( ): $mol_list
+		Drives( ): $mol_labeler
+		create_title( next?: string ): string
+		create( next?: any ): any
+		Create_title( ): $mol_string
+		create_enabled( ): boolean
+		Create_run( ): $mol_button_major
+		Create_row( ): $mol_view
+		Create( ): $mol_labeler
+		Join_hint( ): $mol_paragraph
+		Join( ): $mol_labeler
 		example_open( next?: any ): any
 		Example( ): $mol_button_major
+		Try( ): $mol_labeler
+		welcome_blocks( ): readonly(any)[]
 		admission_link( ): string
 		drive( ): $bog_basket_drive
+		admit( next?: string ): string
+		invite_link( ): string
+		spot_point( id: any): $bog_basket_point
+		buyer_link( id: any): string
+		spot_close( next?: any ): any
+		chief( ): boolean
 		shift_start( id: any, next?: any ): any
 		shift_point( id: any): $bog_basket_point
 		shift( id: any): $bog_basket_shift
 		shift_finish( id: any, next?: any ): any
+		shop( ): $bog_basket_shop
+		spot_id( next?: string ): string
 		plugins( ): readonly(any)[]
 		Placeholder( ): any
 		Welcome( ): $mol_page
 		Admission( ): $bog_basket_admission
+		Office( ): $bog_basket_office
+		Team( ): $bog_basket_team
+		Kit( ): $bog_basket_kit
+		Spot( id: any): $bog_basket_spot
 		Points( ): $bog_basket_points
 		Counter( id: any): $bog_basket_counter
+		Buyer( ): $bog_basket_buyer
 	}
 	
 }
@@ -49638,16 +51340,44 @@ declare namespace $.$$ {
     class $bog_basket_app extends $.$bog_basket_app {
         home(): $bog_basket_home;
         lord(): $giper_baza_link;
-        drive_id(next?: string): string;
+        arg(key: string, next?: string): string;
+        drive_id(): string;
+        drive_open(id: string): void;
+        screen(next?: string): string;
+        spot_id(next?: string): string;
+        admit(next?: string): string;
+        shop_id(): string;
+        shop(): $bog_basket_shop;
         drive(): $bog_basket_drive;
         auto(): void;
         drive_remember(): void;
+        tier(): number & {
+            $giper_baza_rank: number;
+        };
         admitted(): boolean;
+        chief(): boolean;
+        invite_link(): string;
+        buyer_link(point: string): string;
+        spot_point(id: string): $bog_basket_point;
+        spot_close(): void;
+        drive_ids(): string[];
+        drive_rows(): $.$mol_link[];
+        drive_arg(id: string): {
+            drive: string;
+            screen: null;
+            point: null;
+            admit: null;
+        };
+        drive_title(id: string): string;
+        welcome_blocks(): ($.$mol_paragraph | $mol_labeler)[];
+        office_pages(): ($.$bog_basket_office | $.$bog_basket_spot | $.$bog_basket_team | $.$bog_basket_kit)[];
+        create_enabled(): boolean;
+        create(): void;
         admission_link(): string;
         shift_id(next?: string | null): string;
         shift(id: string): $bog_basket_shift;
         shift_point(id: string): $bog_basket_point;
-        pages(): $mol_page[] | $bog_basket_admission[] | ($.$bog_basket_points | $.$bog_basket_counter)[];
+        pages(): $mol_page[] | $.$bog_basket_buyer[] | $bog_basket_admission[] | ($.$bog_basket_office | $.$bog_basket_spot | $.$bog_basket_team | $.$bog_basket_kit)[] | ($.$bog_basket_points | $.$bog_basket_counter)[];
         shift_start(point: string): void;
         shift_finish(id: string): void;
         example_open(): void;

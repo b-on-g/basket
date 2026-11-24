@@ -13552,6 +13552,301 @@ var $;
 })($ || ($ = {}));
 
 ;
+	($.$mol_link) = class $mol_link extends ($.$mol_view) {
+		uri_toggle(){
+			return "";
+		}
+		uri_unsafe(){
+			return (this.uri_toggle());
+		}
+		hint(){
+			return "";
+		}
+		hint_safe(){
+			return (this.hint());
+		}
+		target(){
+			return "_self";
+		}
+		file_name(){
+			return "";
+		}
+		current(){
+			return false;
+		}
+		relation(){
+			return "";
+		}
+		event_click(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		click(next){
+			return (this.event_click(next));
+		}
+		uri(){
+			return "";
+		}
+		dom_name(){
+			return "a";
+		}
+		uri_off(){
+			return "";
+		}
+		uri_native(){
+			return null;
+		}
+		external(){
+			return false;
+		}
+		attr(){
+			return {
+				...(super.attr()), 
+				"href": (this.uri_unsafe()), 
+				"title": (this.hint_safe()), 
+				"target": (this.target()), 
+				"download": (this.file_name()), 
+				"mol_link_current": (this.current()), 
+				"rel": (this.relation())
+			};
+		}
+		sub(){
+			return [(this.title())];
+		}
+		arg(){
+			return {};
+		}
+		event(){
+			return {...(super.event()), "click": (next) => (this.click(next))};
+		}
+	};
+	($mol_mem(($.$mol_link.prototype), "event_click"));
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    function $mol_dom_safe_uri(uri) {
+        return uri.replace(/^(?=\w+script+:)/, 'about:blank#');
+    }
+    $.$mol_dom_safe_uri = $mol_dom_safe_uri;
+    function $mol_dom_safe_attr(val) {
+        return val;
+    }
+    $.$mol_dom_safe_attr = $mol_dom_safe_attr;
+    $.$mol_dom_safe_rules = {
+        // defaults
+        '': { id: $mol_dom_safe_attr },
+        // special
+        a: { href: $mol_dom_safe_uri },
+        img: {
+            src: $mol_dom_safe_uri,
+            width: $mol_dom_safe_attr,
+            height: $mol_dom_safe_attr,
+        },
+        object: { src: $mol_dom_safe_uri },
+        // blocks
+        div: {},
+        p: {},
+        h1: {},
+        h2: {},
+        h3: {},
+        h4: {},
+        h5: {},
+        h6: {},
+        blockquote: {},
+        pre: {},
+        ul: {},
+        ol: {},
+        li: {},
+        details: {},
+        section: {},
+        summary: {},
+        hr: {},
+        table: {},
+        tr: {},
+        td: {},
+        // inlines
+        span: {},
+        strong: {},
+        em: {},
+        br: {},
+        ins: {},
+        del: {},
+        code: {},
+    };
+    function $mol_dom_safe(nodes) {
+        const res = [];
+        for (const node of nodes) {
+            if (node.nodeType === node.TEXT_NODE) {
+                res.push(node);
+                continue;
+            }
+            if (node.nodeType === node.ELEMENT_NODE) {
+                const kids = this.$mol_dom_safe([...node.childNodes]);
+                const allowed = this.$mol_dom_safe_rules[node.localName];
+                if (!allowed) {
+                    res.push(...kids);
+                    continue;
+                }
+                for (const attr of [...node.attributes]) {
+                    const proc = allowed[attr.localName] ?? this.$mol_dom_safe_rules[''][attr.localName];
+                    if (proc)
+                        attr.nodeValue = proc(attr.nodeValue);
+                    else
+                        node.removeAttribute(attr.nodeName);
+                }
+                $mol_dom_render_children(node, kids);
+                res.push(node);
+                continue;
+            }
+        }
+        return res;
+    }
+    $.$mol_dom_safe = $mol_dom_safe;
+})($ || ($ = {}));
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        /**
+         * Dynamic hyperlink. It can add, change or remove parameters. A link that leads to the current page has [mol_link_current] attribute set to true.
+         * @see https://mol.hyoo.ru/#!section=demos/demo=mol_link_demo
+         */
+        class $mol_link extends $.$mol_link {
+            uri_toggle() {
+                return this.current() ? this.uri_off() : this.uri();
+            }
+            uri() {
+                return new this.$.$mol_state_arg(this.state_key()).link(this.arg());
+            }
+            uri_off() {
+                const arg2 = {};
+                for (let i in this.arg())
+                    arg2[i] = null;
+                return new this.$.$mol_state_arg(this.state_key()).link(arg2);
+            }
+            uri_native() {
+                const base = this.$.$mol_state_arg.href();
+                return new URL(this.uri(), base);
+            }
+            current() {
+                const base = this.$.$mol_state_arg.href_normal();
+                const target = this.uri_native().toString();
+                if (base === target)
+                    return true;
+                const args = this.arg();
+                const keys = Object.keys(args).filter(key => args[key] != null);
+                if (keys.length === 0)
+                    return false;
+                for (const key of keys) {
+                    if (this.$.$mol_state_arg.value(key) != args[key])
+                        return false;
+                }
+                return true;
+            }
+            file_name() {
+                return null;
+            }
+            minimal_height() {
+                return Math.max(super.minimal_height(), 24);
+            }
+            external() {
+                return this.uri_native().origin !== $mol_dom_context.location.origin;
+            }
+            target() {
+                return this.external() ? '_blank' : '_self';
+            }
+            hint_safe() {
+                try {
+                    return this.hint();
+                }
+                catch (error) {
+                    $mol_fail_log(error);
+                    if (error instanceof Error)
+                        return '💥' + error.message;
+                    return '';
+                }
+            }
+            uri_unsafe() {
+                return $mol_dom_safe_uri(super.uri_unsafe());
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $mol_link.prototype, "uri_toggle", null);
+        __decorate([
+            $mol_mem
+        ], $mol_link.prototype, "uri", null);
+        __decorate([
+            $mol_mem
+        ], $mol_link.prototype, "uri_off", null);
+        __decorate([
+            $mol_mem
+        ], $mol_link.prototype, "uri_native", null);
+        __decorate([
+            $mol_mem
+        ], $mol_link.prototype, "current", null);
+        $$.$mol_link = $mol_link;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    const { rem } = $mol_style_unit;
+    $mol_style_define($mol_link, {
+        textDecoration: 'none',
+        color: $mol_theme.control,
+        stroke: 'currentColor',
+        cursor: 'pointer',
+        padding: $mol_gap.text,
+        boxSizing: 'border-box',
+        position: 'relative',
+        minWidth: rem(2.5),
+        minHeight: rem(2.5),
+        gap: $mol_gap.space,
+        border: {
+            radius: $mol_gap.round,
+        },
+        ':hover': {
+            background: {
+                color: $mol_theme.hover,
+            },
+        },
+        ':focus': {
+            outline: 'none',
+        },
+        ':focus-visible': {
+            outline: 'none',
+            background: {
+                color: $mol_theme.hover,
+            }
+        },
+        ':active': {
+            color: $mol_theme.focus,
+        },
+        '@': {
+            mol_link_current: {
+                'true': {
+                    color: $mol_theme.current,
+                    textShadow: '0 0',
+                }
+            }
+        },
+    });
+})($ || ($ = {}));
+
+;
 	($.$mol_ghost) = class $mol_ghost extends ($.$mol_view) {
 		Sub(){
 			const obj = new this.$.$mol_view();
@@ -16659,301 +16954,6 @@ var $;
 
 
 ;
-	($.$mol_link) = class $mol_link extends ($.$mol_view) {
-		uri_toggle(){
-			return "";
-		}
-		uri_unsafe(){
-			return (this.uri_toggle());
-		}
-		hint(){
-			return "";
-		}
-		hint_safe(){
-			return (this.hint());
-		}
-		target(){
-			return "_self";
-		}
-		file_name(){
-			return "";
-		}
-		current(){
-			return false;
-		}
-		relation(){
-			return "";
-		}
-		event_click(next){
-			if(next !== undefined) return next;
-			return null;
-		}
-		click(next){
-			return (this.event_click(next));
-		}
-		uri(){
-			return "";
-		}
-		dom_name(){
-			return "a";
-		}
-		uri_off(){
-			return "";
-		}
-		uri_native(){
-			return null;
-		}
-		external(){
-			return false;
-		}
-		attr(){
-			return {
-				...(super.attr()), 
-				"href": (this.uri_unsafe()), 
-				"title": (this.hint_safe()), 
-				"target": (this.target()), 
-				"download": (this.file_name()), 
-				"mol_link_current": (this.current()), 
-				"rel": (this.relation())
-			};
-		}
-		sub(){
-			return [(this.title())];
-		}
-		arg(){
-			return {};
-		}
-		event(){
-			return {...(super.event()), "click": (next) => (this.click(next))};
-		}
-	};
-	($mol_mem(($.$mol_link.prototype), "event_click"));
-
-
-;
-"use strict";
-var $;
-(function ($) {
-    function $mol_dom_safe_uri(uri) {
-        return uri.replace(/^(?=\w+script+:)/, 'about:blank#');
-    }
-    $.$mol_dom_safe_uri = $mol_dom_safe_uri;
-    function $mol_dom_safe_attr(val) {
-        return val;
-    }
-    $.$mol_dom_safe_attr = $mol_dom_safe_attr;
-    $.$mol_dom_safe_rules = {
-        // defaults
-        '': { id: $mol_dom_safe_attr },
-        // special
-        a: { href: $mol_dom_safe_uri },
-        img: {
-            src: $mol_dom_safe_uri,
-            width: $mol_dom_safe_attr,
-            height: $mol_dom_safe_attr,
-        },
-        object: { src: $mol_dom_safe_uri },
-        // blocks
-        div: {},
-        p: {},
-        h1: {},
-        h2: {},
-        h3: {},
-        h4: {},
-        h5: {},
-        h6: {},
-        blockquote: {},
-        pre: {},
-        ul: {},
-        ol: {},
-        li: {},
-        details: {},
-        section: {},
-        summary: {},
-        hr: {},
-        table: {},
-        tr: {},
-        td: {},
-        // inlines
-        span: {},
-        strong: {},
-        em: {},
-        br: {},
-        ins: {},
-        del: {},
-        code: {},
-    };
-    function $mol_dom_safe(nodes) {
-        const res = [];
-        for (const node of nodes) {
-            if (node.nodeType === node.TEXT_NODE) {
-                res.push(node);
-                continue;
-            }
-            if (node.nodeType === node.ELEMENT_NODE) {
-                const kids = this.$mol_dom_safe([...node.childNodes]);
-                const allowed = this.$mol_dom_safe_rules[node.localName];
-                if (!allowed) {
-                    res.push(...kids);
-                    continue;
-                }
-                for (const attr of [...node.attributes]) {
-                    const proc = allowed[attr.localName] ?? this.$mol_dom_safe_rules[''][attr.localName];
-                    if (proc)
-                        attr.nodeValue = proc(attr.nodeValue);
-                    else
-                        node.removeAttribute(attr.nodeName);
-                }
-                $mol_dom_render_children(node, kids);
-                res.push(node);
-                continue;
-            }
-        }
-        return res;
-    }
-    $.$mol_dom_safe = $mol_dom_safe;
-})($ || ($ = {}));
-
-;
-"use strict";
-
-
-;
-"use strict";
-var $;
-(function ($) {
-    var $$;
-    (function ($$) {
-        /**
-         * Dynamic hyperlink. It can add, change or remove parameters. A link that leads to the current page has [mol_link_current] attribute set to true.
-         * @see https://mol.hyoo.ru/#!section=demos/demo=mol_link_demo
-         */
-        class $mol_link extends $.$mol_link {
-            uri_toggle() {
-                return this.current() ? this.uri_off() : this.uri();
-            }
-            uri() {
-                return new this.$.$mol_state_arg(this.state_key()).link(this.arg());
-            }
-            uri_off() {
-                const arg2 = {};
-                for (let i in this.arg())
-                    arg2[i] = null;
-                return new this.$.$mol_state_arg(this.state_key()).link(arg2);
-            }
-            uri_native() {
-                const base = this.$.$mol_state_arg.href();
-                return new URL(this.uri(), base);
-            }
-            current() {
-                const base = this.$.$mol_state_arg.href_normal();
-                const target = this.uri_native().toString();
-                if (base === target)
-                    return true;
-                const args = this.arg();
-                const keys = Object.keys(args).filter(key => args[key] != null);
-                if (keys.length === 0)
-                    return false;
-                for (const key of keys) {
-                    if (this.$.$mol_state_arg.value(key) != args[key])
-                        return false;
-                }
-                return true;
-            }
-            file_name() {
-                return null;
-            }
-            minimal_height() {
-                return Math.max(super.minimal_height(), 24);
-            }
-            external() {
-                return this.uri_native().origin !== $mol_dom_context.location.origin;
-            }
-            target() {
-                return this.external() ? '_blank' : '_self';
-            }
-            hint_safe() {
-                try {
-                    return this.hint();
-                }
-                catch (error) {
-                    $mol_fail_log(error);
-                    if (error instanceof Error)
-                        return '💥' + error.message;
-                    return '';
-                }
-            }
-            uri_unsafe() {
-                return $mol_dom_safe_uri(super.uri_unsafe());
-            }
-        }
-        __decorate([
-            $mol_mem
-        ], $mol_link.prototype, "uri_toggle", null);
-        __decorate([
-            $mol_mem
-        ], $mol_link.prototype, "uri", null);
-        __decorate([
-            $mol_mem
-        ], $mol_link.prototype, "uri_off", null);
-        __decorate([
-            $mol_mem
-        ], $mol_link.prototype, "uri_native", null);
-        __decorate([
-            $mol_mem
-        ], $mol_link.prototype, "current", null);
-        $$.$mol_link = $mol_link;
-    })($$ = $.$$ || ($.$$ = {}));
-})($ || ($ = {}));
-
-;
-"use strict";
-var $;
-(function ($) {
-    const { rem } = $mol_style_unit;
-    $mol_style_define($mol_link, {
-        textDecoration: 'none',
-        color: $mol_theme.control,
-        stroke: 'currentColor',
-        cursor: 'pointer',
-        padding: $mol_gap.text,
-        boxSizing: 'border-box',
-        position: 'relative',
-        minWidth: rem(2.5),
-        minHeight: rem(2.5),
-        gap: $mol_gap.space,
-        border: {
-            radius: $mol_gap.round,
-        },
-        ':hover': {
-            background: {
-                color: $mol_theme.hover,
-            },
-        },
-        ':focus': {
-            outline: 'none',
-        },
-        ':focus-visible': {
-            outline: 'none',
-            background: {
-                color: $mol_theme.hover,
-            }
-        },
-        ':active': {
-            color: $mol_theme.focus,
-        },
-        '@': {
-            mol_link_current: {
-                'true': {
-                    color: $mol_theme.current,
-                    textShadow: '0 0',
-                }
-            }
-        },
-    });
-})($ || ($ = {}));
-
-;
 	($.$giper_baza_status) = class $giper_baza_status extends ($.$mol_select) {
 		master_id(id){
 			return "";
@@ -18923,9 +18923,18 @@ var $;
 		drive_title(){
 			return "";
 		}
+		Office_link(){
+			const obj = new this.$.$mol_link();
+			(obj.title) = () => ("Штаб");
+			(obj.arg) = () => ({"screen": null});
+			return obj;
+		}
 		Status(){
 			const obj = new this.$.$giper_baza_status();
 			return obj;
+		}
+		tool_list(){
+			return [(this.Office_link()), (this.Status())];
 		}
 		hint_text(){
 			return "";
@@ -18985,16 +18994,20 @@ var $;
 			if(next !== undefined) return next;
 			return null;
 		}
+		chief(){
+			return false;
+		}
 		title(){
 			return (this.drive_title());
 		}
 		tools(){
-			return [(this.Status())];
+			return (this.tool_list());
 		}
 		body(){
 			return [(this.Hint()), (this.Rows())];
 		}
 	};
+	($mol_mem(($.$bog_basket_points.prototype), "Office_link"));
 	($mol_mem(($.$bog_basket_points.prototype), "Status"));
 	($mol_mem(($.$bog_basket_points.prototype), "Hint"));
 	($mol_mem_key(($.$bog_basket_points.prototype), "Row_title"));
@@ -19019,6 +19032,9 @@ var $;
         class $bog_basket_points extends $.$bog_basket_points {
             point(id) {
                 return this.drive().land().Pawn($bog_basket_point).Head(new $giper_baza_link(id));
+            }
+            tool_list() {
+                return [...this.chief() ? [this.Office_link()] : [], this.Status()];
             }
             drive_title() {
                 return this.drive().Title()?.val() ?? '';
@@ -19092,6 +19108,38 @@ var $;
 ;
 "use strict";
 var $;
+(function ($) {
+    /**
+     * Serialize csv data with delimiter
+     * @see https://mol.hyoo.ru/#!section=demos/demo=mol_csv_serial
+     */
+    function $mol_csv_serial(data, delimiter = ',') {
+        const fields = new Set();
+        for (const item of data) {
+            for (const field of Object.keys(item)) {
+                fields.add(field);
+            }
+        }
+        const rows = [[...fields]];
+        for (const item of data) {
+            const row = [];
+            rows.push(row);
+            for (const field of fields) {
+                row.push(String(item[field] ?? ''));
+            }
+        }
+        return $mol_csv_serial_table(rows, delimiter);
+    }
+    $.$mol_csv_serial = $mol_csv_serial;
+    function $mol_csv_serial_table(rows, delimiter = ',') {
+        return rows.map(row => row.map(cell => '"' + String(cell).replace(/"/g, '""') + '"').join(delimiter)).join('\n');
+    }
+    $.$mol_csv_serial_table = $mol_csv_serial_table;
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
 (function ($_1) {
     class $bog_basket_good extends $giper_baza_dict.with({
         Title: $giper_baza_atom_text,
@@ -19123,9 +19171,17 @@ var $;
         Goods: $giper_baza_list_link.to(() => $bog_basket_good),
         Points: $giper_baza_list_link.to(() => $bog_basket_point),
         Volunteers: $giper_baza_dict_to($giper_baza_atom_text),
+        Shop: $giper_baza_atom_text,
     }) {
     }
     $_1.$bog_basket_drive = $bog_basket_drive;
+    class $bog_basket_shop extends $giper_baza_dict.with({
+        Title: $giper_baza_atom_text,
+        Updated: $giper_baza_atom_time,
+        Points: $giper_baza_dict_to($giper_baza_atom_text),
+    }) {
+    }
+    $_1.$bog_basket_shop = $bog_basket_shop;
     class $bog_basket_home extends $giper_baza_dict.with({
         Drives: $giper_baza_list_link.to(() => $bog_basket_drive),
     }, 'bog_basket') {
@@ -19164,6 +19220,15 @@ var $;
         return kits.length ? Math.min(...kits) : 0;
     }
     $_1.$bog_basket_kits = $bog_basket_kits;
+    function $bog_basket_tier(land, lord) {
+        land.sync();
+        return land.lord_rank(lord);
+    }
+    $_1.$bog_basket_tier = $bog_basket_tier;
+    function $bog_basket_total(point, goods) {
+        return goods.reduce((sum, good) => sum + $bog_basket_got(point, good), 0);
+    }
+    $_1.$bog_basket_total = $bog_basket_total;
     function $bog_basket_lack(drive, point) {
         const portion = (good) => $bog_basket_got(point, good) / $bog_basket_need(point, good);
         return $bog_basket_goods(drive)
@@ -19173,7 +19238,9 @@ var $;
     $_1.$bog_basket_lack = $bog_basket_lack;
     function $bog_basket_drive_make($, title) {
         const land = $.$giper_baza_glob.land_grab([[null, $giper_baza_rank_deny]]);
+        const shop = $.$giper_baza_glob.land_grab([[null, $giper_baza_rank_read]]);
         const drive = land.Data($bog_basket_drive);
+        drive.Shop('auto').val(shop.link().str);
         drive.Title('auto').val(title);
         drive.Goods('auto');
         drive.Points('auto');
@@ -19207,27 +19274,91 @@ var $;
         return shift;
     }
     $_1.$bog_basket_shift_make = $bog_basket_shift_make;
+    function $bog_basket_shop_publish(drive, updated) {
+        const link = drive.Shop()?.val();
+        if (!link)
+            return;
+        const shop = drive.$.$giper_baza_glob.Land(new $giper_baza_link(link)).Data($bog_basket_shop);
+        const title = drive.Title()?.val() ?? '';
+        const goods = $bog_basket_goods(drive);
+        const points = $bog_basket_points_all(drive);
+        const texts = new Map(points.map(point => [point.head().str, JSON.stringify({
+                title: point.Title()?.val() ?? '',
+                address: point.Address()?.val() ?? '',
+                goods: goods.map(good => ({
+                    title: good.Title()?.val() ?? '',
+                    price: good.Price()?.val() ?? 0,
+                    got: $bog_basket_got(point, good),
+                    need: $bog_basket_need(point, good),
+                })),
+            })]));
+        const extra = (shop.Points()?.keys() ?? []).map(String).filter(id => !texts.has(id));
+        const fresh = [...texts].filter(([id, text]) => shop.Points()?.key(id)?.val() !== text);
+        if (shop.Title()?.val() === title && !extra.length && !fresh.length)
+            return;
+        shop.Title('auto').val(title);
+        for (const id of extra)
+            shop.Points('auto').has(id, false);
+        for (const [id, text] of fresh)
+            shop.Points('auto').key(id, 'auto').val(text);
+        shop.Updated('auto').val(updated);
+    }
+    $_1.$bog_basket_shop_publish = $bog_basket_shop_publish;
+    function $bog_basket_buy(goods, money) {
+        const counts = goods.map(() => 0);
+        for (;;) {
+            const portion = (index) => (goods[index].got + counts[index]) / goods[index].need;
+            const next = goods.map((_, index) => index)
+                .filter(index => goods[index].price > 0 && goods[index].price <= money && portion(index) < 1)
+                .sort((left, right) => portion(left) - portion(right))[0];
+            if (next === undefined)
+                return counts;
+            ++counts[next];
+            money -= goods[next].price;
+        }
+    }
+    $_1.$bog_basket_buy = $bog_basket_buy;
+    function $bog_basket_csv(drive) {
+        const goods = $bog_basket_goods(drive);
+        const head = ['Точка', 'Адрес', 'Наборов план', 'Наборов готово', ...goods.flatMap(good => {
+                const title = good.Title()?.val() ?? '';
+                return [`${title}, принято`, `${title}, план`];
+            })];
+        const rows = $bog_basket_points_all(drive).map(point => [
+            point.Title()?.val() ?? '',
+            point.Address()?.val() ?? '',
+            point.Kits()?.val() ?? 0,
+            $bog_basket_kits(drive, point),
+            ...goods.flatMap(good => [$bog_basket_got(point, good), $bog_basket_need(point, good)]),
+        ].map(String));
+        return $mol_csv_serial_table([head, ...rows], ';');
+    }
+    $_1.$bog_basket_csv = $bog_basket_csv;
     function $bog_basket_admit(drive, pass, name) {
-        drive.land().give(pass, $giper_baza_rank_post('just'));
-        drive.Volunteers('auto').key(pass.lord().str, 'auto').val(name);
+        const lord = pass.lord();
+        if (!drive.Volunteers()?.key(lord.str)?.val())
+            drive.Volunteers('auto').key(lord.str, 'auto').val(name);
+        if ($bog_basket_tier(drive.land(), lord) < $giper_baza_rank_tier.post)
+            drive.land().give(pass, $giper_baza_rank_post('just'));
     }
     $_1.$bog_basket_admit = $bog_basket_admit;
     function $bog_basket_dismiss(drive, lord) {
-        for (const point of $bog_basket_points_all(drive)) {
-            for (const shift of $bog_basket_shifts(point)) {
-                if (shift.Volunteer()?.val() !== lord.str)
-                    continue;
-                if (shift.Source()?.val())
-                    continue;
-                const copy = $bog_basket_shift_make(point, lord.str, shift.Started().val());
-                copy.Source('auto').val(shift.head().str);
-                copy.Finished('auto').val(shift.Finished()?.val() ?? null);
-                for (const good of $bog_basket_goods(drive)) {
-                    const count = $bog_basket_count(shift, good);
-                    if (count)
-                        copy.Counts('auto').key(good.head().str, 'auto').val(count);
-                }
-            }
+        const goods = $bog_basket_goods(drive);
+        const copies = $bog_basket_points_all(drive).flatMap(point => $bog_basket_shifts(point)
+            .filter(shift => shift.Volunteer()?.val() === lord.str && !shift.Source()?.val())
+            .map(shift => ({
+            point,
+            source: shift.head().str,
+            started: shift.Started().val(),
+            finished: shift.Finished()?.val() ?? null,
+            counts: goods.map(good => [good.head().str, $bog_basket_count(shift, good)]).filter(([, count]) => count),
+        })));
+        for (const { point, source, started, finished, counts } of copies) {
+            const copy = $bog_basket_shift_make(point, lord.str, started);
+            for (const [good, count] of counts)
+                copy.Counts('auto').key(good, 'auto').val(count);
+            copy.Finished('auto').val(finished);
+            copy.Source('auto').val(source);
         }
         drive.land().lord_rank(lord, $giper_baza_rank_deny);
     }
@@ -19463,6 +19594,45 @@ var $;
         $$.$mol_theme_auto = $mol_theme_auto;
     })($$ = $.$$ || ($.$$ = {}));
 })($ || ($ = {}));
+
+;
+	($.$mol_labeler) = class $mol_labeler extends ($.$mol_list) {
+		label(){
+			return [(this.title())];
+		}
+		Label(){
+			const obj = new this.$.$mol_view();
+			(obj.minimal_height) = () => (32);
+			(obj.sub) = () => ((this.label()));
+			return obj;
+		}
+		content(){
+			return [];
+		}
+		Content(){
+			const obj = new this.$.$mol_view();
+			(obj.minimal_height) = () => (24);
+			(obj.sub) = () => ((this.content()));
+			return obj;
+		}
+		rows(){
+			return [(this.Label()), (this.Content())];
+		}
+	};
+	($mol_mem(($.$mol_labeler.prototype), "Label"));
+	($mol_mem(($.$mol_labeler.prototype), "Content"));
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("mol/labeler/labeler.view.css", "[mol_labeler] {\n\tdisplay: flex;\n\tflex-direction: column;\n\talign-items: stretch;\n\tcursor: inherit;\n}\n\n[mol_labeler_label] {\n\tmin-height: 2rem;\n\tcolor: var(--mol_theme_shade);\n\tpadding: 0;\n\tpadding-top: .5rem;\n\tpadding-inline: .75rem;\n\tgap: 0 var(--mol_gap_block);\n\tflex-wrap: wrap;\n}\n\n[mol_labeler_content] {\n\tdisplay: flex;\n\tpadding: var(--mol_gap_text);\n\tmin-height: 2.5rem;\n}\n");
+})($ || ($ = {}));
+
+;
+"use strict";
+
 
 ;
 	($.$mol_button_major) = class $mol_button_major extends ($.$mol_button_minor) {
@@ -20208,26 +20378,7 @@ var $;
 })($ || ($ = {}));
 
 ;
-	($.$mol_icon_minus) = class $mol_icon_minus extends ($.$mol_icon) {
-		path(){
-			return "M19,13H5V11H19V13Z";
-		}
-	};
-
-
-;
-"use strict";
-
-
-;
-	($.$bog_basket_tile) = class $bog_basket_tile extends ($.$mol_view) {
-		full(){
-			return false;
-		}
-		add(next){
-			if(next !== undefined) return next;
-			return null;
-		}
+	($.$bog_basket_bar) = class $bog_basket_bar extends ($.$mol_view) {
 		title(){
 			return "";
 		}
@@ -20257,11 +20408,1944 @@ var $;
 			(obj.portion) = () => ((this.progress()));
 			return obj;
 		}
+		got(){
+			return 0;
+		}
+		need(){
+			return 0;
+		}
+		sub(){
+			return [(this.Head()), (this.Progress())];
+		}
+	};
+	($mol_mem(($.$bog_basket_bar.prototype), "Title"));
+	($mol_mem(($.$bog_basket_bar.prototype), "Total"));
+	($mol_mem(($.$bog_basket_bar.prototype), "Head"));
+	($mol_mem(($.$bog_basket_bar.prototype), "Progress"));
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $bog_basket_bar extends $.$bog_basket_bar {
+            total_text() {
+                return this.need() ? `${this.got()} из ${this.need()}` : String(this.got());
+            }
+            progress() {
+                return this.need() ? Math.min(1, this.got() / this.need()) : 0;
+            }
+        }
+        $$.$bog_basket_bar = $bog_basket_bar;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        $mol_style_define($bog_basket_bar, {
+            flex: {
+                direction: 'column',
+                grow: 1,
+            },
+            minWidth: 0,
+            gap: $mol_gap.space,
+            Head: {
+                flex: {
+                    wrap: 'wrap',
+                },
+                justify: {
+                    content: 'space-between',
+                },
+                align: {
+                    items: 'baseline',
+                },
+                gap: $mol_gap.space,
+            },
+            Title: {
+                font: {
+                    size: '1.1rem',
+                    weight: 'bold',
+                },
+            },
+            Total: {
+                whiteSpace: 'nowrap',
+            },
+            Progress: {
+                flex: {
+                    basis: '0.5rem',
+                    grow: 0,
+                },
+                width: '100%',
+            },
+        });
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+	($.$mol_icon_download) = class $mol_icon_download extends ($.$mol_icon) {
+		path(){
+			return "M5,20H19V18H5M19,9H15V3H9V9H5L12,16L19,9Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_button_download) = class $mol_button_download extends ($.$mol_button_minor) {
+		Icon(){
+			const obj = new this.$.$mol_icon_download();
+			return obj;
+		}
+		title(){
+			return "";
+		}
+		blob(){
+			return null;
+		}
+		uri(){
+			return "";
+		}
+		file_name(){
+			return "blob.bin";
+		}
+		sub(){
+			return [(this.Icon()), (this.title())];
+		}
+	};
+	($mol_mem(($.$mol_button_download.prototype), "Icon"));
+
+
+;
+"use strict";
+/** @jsx $mol_jsx */
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        /**
+         * Button download file from uri() or a blob()
+         * @see https://mol.hyoo.ru/#!section=demos/demo=mol_button_demo
+         */
+        class $mol_button_download extends $.$mol_button_download {
+            uri() {
+                return URL.createObjectURL(this.blob());
+            }
+            click() {
+                const a = $mol_jsx("a", { href: this.uri(), download: this.file_name() });
+                a.click();
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $mol_button_download.prototype, "uri", null);
+        $$.$mol_button_download = $mol_button_download;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+
+
+;
+	($.$bog_basket_office) = class $bog_basket_office extends ($.$mol_page) {
+		drive_title(){
+			return "";
+		}
+		Status(){
+			const obj = new this.$.$giper_baza_status();
+			return obj;
+		}
+		Team_link(){
+			const obj = new this.$.$mol_link();
+			(obj.title) = () => ("Волонтёры");
+			(obj.arg) = () => ({
+				"screen": "team", 
+				"point": null, 
+				"admit": null
+			});
+			return obj;
+		}
+		Kit_link(){
+			const obj = new this.$.$mol_link();
+			(obj.title) = () => ("Набор");
+			(obj.arg) = () => ({
+				"screen": "kit", 
+				"point": null, 
+				"admit": null
+			});
+			return obj;
+		}
+		Count_link(){
+			const obj = new this.$.$mol_link();
+			(obj.title) = () => ("Приём на точке");
+			(obj.arg) = () => ({
+				"screen": "count", 
+				"point": null, 
+				"admit": null
+			});
+			return obj;
+		}
+		Drives_link(){
+			const obj = new this.$.$mol_link();
+			(obj.title) = () => ("Все сборы");
+			(obj.arg) = () => ({
+				"drive": "", 
+				"screen": null, 
+				"point": null, 
+				"admit": null
+			});
+			return obj;
+		}
+		Nav(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([
+				(this.Team_link()), 
+				(this.Kit_link()), 
+				(this.Count_link()), 
+				(this.Drives_link())
+			]);
+			return obj;
+		}
+		total_text(){
+			return "";
+		}
+		Total(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ((this.total_text()));
+			return obj;
+		}
+		good_title(id){
+			return "";
+		}
+		good_got(id){
+			return 0;
+		}
+		good_need(id){
+			return 0;
+		}
+		Good(id){
+			const obj = new this.$.$bog_basket_bar();
+			(obj.title) = () => ((this.good_title(id)));
+			(obj.got) = () => ((this.good_got(id)));
+			(obj.need) = () => ((this.good_need(id)));
+			return obj;
+		}
+		good_rows(){
+			return [(this.Good(id))];
+		}
+		Goods_rows(){
+			const obj = new this.$.$mol_list();
+			(obj.rows) = () => ((this.good_rows()));
+			return obj;
+		}
+		Goods(){
+			const obj = new this.$.$mol_labeler();
+			(obj.title) = () => ("Собрано всего");
+			(obj.content) = () => ([(this.Goods_rows())]);
+			return obj;
+		}
+		point_arg(id){
+			return {};
+		}
+		point_title(id){
+			return "";
+		}
+		point_kits(id){
+			return 0;
+		}
+		point_plan(id){
+			return 0;
+		}
+		Point_bar(id){
+			const obj = new this.$.$bog_basket_bar();
+			(obj.title) = () => ((this.point_title(id)));
+			(obj.got) = () => ((this.point_kits(id)));
+			(obj.need) = () => ((this.point_plan(id)));
+			return obj;
+		}
+		point_note(id){
+			return "";
+		}
+		Point_note(id){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.point_note(id))]);
+			return obj;
+		}
+		Point(id){
+			const obj = new this.$.$mol_link();
+			(obj.arg) = () => ((this.point_arg(id)));
+			(obj.sub) = () => ([(this.Point_bar(id)), (this.Point_note(id))]);
+			return obj;
+		}
+		point_rows(){
+			return [(this.Point(id))];
+		}
+		Points_rows(){
+			const obj = new this.$.$mol_list();
+			(obj.rows) = () => ((this.point_rows()));
+			return obj;
+		}
+		Points(){
+			const obj = new this.$.$mol_labeler();
+			(obj.title) = () => ("Точки");
+			(obj.content) = () => ([(this.Points_rows())]);
+			return obj;
+		}
+		point_new_title(next){
+			if(next !== undefined) return next;
+			return "";
+		}
+		point_add(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Point_new_title(){
+			const obj = new this.$.$mol_string();
+			(obj.hint) = () => ("Название точки");
+			(obj.value) = (next) => ((this.point_new_title(next)));
+			(obj.submit) = (next) => ((this.point_add(next)));
+			return obj;
+		}
+		point_add_enabled(){
+			return false;
+		}
+		Point_new_add(){
+			const obj = new this.$.$mol_button_major();
+			(obj.title) = () => ("Добавить точку");
+			(obj.enabled) = () => ((this.point_add_enabled()));
+			(obj.click) = (next) => ((this.point_add(next)));
+			return obj;
+		}
+		Point_new(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Point_new_title()), (this.Point_new_add())]);
+			return obj;
+		}
+		csv_blob(){
+			return null;
+		}
+		Csv(){
+			const obj = new this.$.$mol_button_download();
+			(obj.title) = () => ("Сводка для Excel (CSV)");
+			(obj.file_name) = () => ("korzina.csv");
+			(obj.blob) = () => ((this.csv_blob()));
+			return obj;
+		}
+		drive(){
+			const obj = new this.$.$bog_basket_drive();
+			return obj;
+		}
+		title(){
+			return (this.drive_title());
+		}
+		tools(){
+			return [(this.Status())];
+		}
+		body(){
+			return [
+				(this.Nav()), 
+				(this.Total()), 
+				(this.Goods()), 
+				(this.Points()), 
+				(this.Point_new()), 
+				(this.Csv())
+			];
+		}
+	};
+	($mol_mem(($.$bog_basket_office.prototype), "Status"));
+	($mol_mem(($.$bog_basket_office.prototype), "Team_link"));
+	($mol_mem(($.$bog_basket_office.prototype), "Kit_link"));
+	($mol_mem(($.$bog_basket_office.prototype), "Count_link"));
+	($mol_mem(($.$bog_basket_office.prototype), "Drives_link"));
+	($mol_mem(($.$bog_basket_office.prototype), "Nav"));
+	($mol_mem(($.$bog_basket_office.prototype), "Total"));
+	($mol_mem_key(($.$bog_basket_office.prototype), "Good"));
+	($mol_mem(($.$bog_basket_office.prototype), "Goods_rows"));
+	($mol_mem(($.$bog_basket_office.prototype), "Goods"));
+	($mol_mem_key(($.$bog_basket_office.prototype), "Point_bar"));
+	($mol_mem_key(($.$bog_basket_office.prototype), "Point_note"));
+	($mol_mem_key(($.$bog_basket_office.prototype), "Point"));
+	($mol_mem(($.$bog_basket_office.prototype), "Points_rows"));
+	($mol_mem(($.$bog_basket_office.prototype), "Points"));
+	($mol_mem(($.$bog_basket_office.prototype), "point_new_title"));
+	($mol_mem(($.$bog_basket_office.prototype), "point_add"));
+	($mol_mem(($.$bog_basket_office.prototype), "Point_new_title"));
+	($mol_mem(($.$bog_basket_office.prototype), "Point_new_add"));
+	($mol_mem(($.$bog_basket_office.prototype), "Point_new"));
+	($mol_mem(($.$bog_basket_office.prototype), "Csv"));
+	($mol_mem(($.$bog_basket_office.prototype), "drive"));
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $bog_basket_office extends $.$bog_basket_office {
+            good(id) {
+                return this.drive().land().Pawn($bog_basket_good).Head(new $giper_baza_link(id));
+            }
+            point(id) {
+                return this.drive().land().Pawn($bog_basket_point).Head(new $giper_baza_link(id));
+            }
+            points() {
+                return $bog_basket_points_all(this.drive());
+            }
+            auto() {
+                $bog_basket_shop_publish(this.drive(), new $mol_time_moment);
+            }
+            drive_title() {
+                return this.drive().Title()?.val() ?? '';
+            }
+            good_rows() {
+                return $bog_basket_goods(this.drive()).map(good => this.Good(good.head().str));
+            }
+            good_title(id) {
+                return this.good(id).Title()?.val() ?? '';
+            }
+            good_got(id) {
+                return this.points().reduce((sum, point) => sum + $bog_basket_got(point, this.good(id)), 0);
+            }
+            good_need(id) {
+                return this.points().reduce((sum, point) => sum + $bog_basket_need(point, this.good(id)), 0);
+            }
+            point_rows() {
+                return this.points().map(point => this.Point(point.head().str));
+            }
+            point_arg(id) {
+                return { screen: 'spot', point: id, admit: null };
+            }
+            point_title(id) {
+                return this.point(id).Title()?.val() || 'Без названия';
+            }
+            point_kits(id) {
+                return $bog_basket_kits(this.drive(), this.point(id));
+            }
+            point_plan(id) {
+                return this.point(id).Kits()?.val() ?? 0;
+            }
+            point_note(id) {
+                const lack = $bog_basket_lack(this.drive(), this.point(id)).slice(0, 2);
+                const open = $bog_basket_shifts(this.point(id)).filter(shift => !shift.Finished()?.val()).length;
+                return [
+                    open ? `Смен идёт: ${open}` : 'Сейчас никто не принимает',
+                    ...lack.length ? ['не хватает: ' + lack.map(good => good.Title()?.val()?.toLowerCase()).join(', ')] : [],
+                ].join(', ');
+            }
+            total_text() {
+                const goods = $bog_basket_goods(this.drive());
+                const count = goods.reduce((sum, good) => sum + this.good_got(good.head().str), 0);
+                const weight = goods.reduce((sum, good) => sum + this.good_got(good.head().str) * (good.Weight()?.val() ?? 0), 0);
+                const kits = this.points().reduce((sum, point) => sum + this.point_kits(point.head().str), 0);
+                const plan = this.points().reduce((sum, point) => sum + this.point_plan(point.head().str), 0);
+                return `Принято ${count} шт., ${Math.round(weight)} кг. Наборов готово ${kits} из ${plan}.`;
+            }
+            point_add_enabled() {
+                return Boolean(this.point_new_title().trim());
+            }
+            point_add() {
+                if (!this.point_add_enabled())
+                    return;
+                $bog_basket_point_make(this.drive(), this.point_new_title().trim(), '', 0);
+                this.point_new_title('');
+            }
+            csv_blob() {
+                return new $mol_blob(['﻿' + $bog_basket_csv(this.drive())], { type: 'text/csv' });
+            }
+        }
+        __decorate([
+            $mol_mem_key
+        ], $bog_basket_office.prototype, "good_got", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_basket_office.prototype, "good_need", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_basket_office.prototype, "point_kits", null);
+        __decorate([
+            $mol_mem_key
+        ], $bog_basket_office.prototype, "point_note", null);
+        __decorate([
+            $mol_mem
+        ], $bog_basket_office.prototype, "total_text", null);
+        __decorate([
+            $mol_action
+        ], $bog_basket_office.prototype, "point_add", null);
+        __decorate([
+            $mol_mem
+        ], $bog_basket_office.prototype, "csv_blob", null);
+        $$.$bog_basket_office = $bog_basket_office;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        $mol_style_define($bog_basket_office, {
+            flex: {
+                basis: '28rem',
+                grow: 1,
+            },
+            Nav: {
+                flex: {
+                    wrap: 'wrap',
+                },
+            },
+            Total: {
+                font: {
+                    size: '1.25rem',
+                },
+                padding: $mol_gap.block,
+            },
+            Goods_rows: {
+                flex: {
+                    grow: 1,
+                },
+                gap: $mol_gap.block,
+            },
+            Points_rows: {
+                gap: $mol_gap.space,
+            },
+            Point: {
+                flex: {
+                    direction: 'column',
+                },
+                align: {
+                    items: 'stretch',
+                },
+                background: {
+                    color: $mol_theme.card,
+                },
+            },
+            Point_note: {
+                color: $mol_theme.shade,
+            },
+            Point_new: {
+                padding: $mol_gap.block,
+            },
+            Point_new_title: {
+                flex: {
+                    grow: 1,
+                },
+            },
+            Csv: {
+                margin: $mol_gap.block,
+                align: {
+                    self: 'flex-start',
+                },
+            },
+        });
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+	($.$bog_basket_team) = class $bog_basket_team extends ($.$mol_page) {
+		Close_icon(){
+			const obj = new this.$.$mol_icon_close();
+			return obj;
+		}
+		Close(){
+			const obj = new this.$.$mol_link();
+			(obj.hint) = () => ("Закрыть");
+			(obj.arg) = () => ({"screen": null, "admit": null});
+			(obj.sub) = () => ([(this.Close_icon())]);
+			return obj;
+		}
+		pending_text(){
+			return "";
+		}
+		Pending_text(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ((this.pending_text()));
+			return obj;
+		}
+		name(next){
+			if(next !== undefined) return next;
+			return "";
+		}
+		admit_run(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Name(){
+			const obj = new this.$.$mol_string();
+			(obj.hint) = () => ("Имя или позывной");
+			(obj.value) = (next) => ((this.name(next)));
+			(obj.submit) = (next) => ((this.admit_run(next)));
+			return obj;
+		}
+		admit_enabled(){
+			return false;
+		}
+		Admit(){
+			const obj = new this.$.$mol_button_major();
+			(obj.title) = () => ("Допустить");
+			(obj.enabled) = () => ((this.admit_enabled()));
+			(obj.click) = (next) => ((this.admit_run(next)));
+			return obj;
+		}
+		Pending(){
+			const obj = new this.$.$mol_list();
+			(obj.rows) = () => ([
+				(this.Pending_text()), 
+				(this.Name()), 
+				(this.Admit())
+			]);
+			return obj;
+		}
+		paste(next){
+			if(next !== undefined) return next;
+			return "";
+		}
+		Paste_field(){
+			const obj = new this.$.$mol_string();
+			(obj.hint) = () => ("Вставьте ссылку сюда");
+			(obj.value) = (next) => ((this.paste(next)));
+			return obj;
+		}
+		Paste(){
+			const obj = new this.$.$mol_labeler();
+			(obj.title) = () => ("Допустить по ссылке волонтёра");
+			(obj.content) = () => ([(this.Paste_field())]);
+			return obj;
+		}
+		Invite_hint(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ("Дайте волонтёру эту ссылку. Он покажет в ответ свой код: наведите на него камеру и допустите.");
+			return obj;
+		}
+		Invite_code(){
+			const obj = new this.$.$bog_qr();
+			(obj.uri) = () => ((this.invite_link()));
+			(obj.gradient_stops) = () => (["var(--mol_theme_text)", "var(--mol_theme_text)"]);
+			return obj;
+		}
+		Invite_copy(){
+			const obj = new this.$.$mol_button_copy();
+			(obj.title) = () => ("Скопировать приглашение");
+			(obj.text) = () => ((this.invite_link()));
+			return obj;
+		}
+		Invite_list(){
+			const obj = new this.$.$mol_list();
+			(obj.rows) = () => ([
+				(this.Invite_hint()), 
+				(this.Invite_code()), 
+				(this.Invite_copy())
+			]);
+			return obj;
+		}
+		Invite(){
+			const obj = new this.$.$mol_labeler();
+			(obj.title) = () => ("Приглашение");
+			(obj.content) = () => ([(this.Invite_list())]);
+			return obj;
+		}
+		person_name(id, next){
+			if(next !== undefined) return next;
+			return "";
+		}
+		Person_name(id){
+			const obj = new this.$.$mol_string();
+			(obj.value) = (next) => ((this.person_name(id, next)));
+			return obj;
+		}
+		person_status(id){
+			return "";
+		}
+		Person_status(id){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.person_status(id))]);
+			return obj;
+		}
+		dismiss(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Dismiss(id){
+			const obj = new this.$.$mol_button_minor();
+			(obj.title) = () => ("Отозвать");
+			(obj.click) = (next) => ((this.dismiss(id, next)));
+			return obj;
+		}
+		restore(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Restore(id){
+			const obj = new this.$.$mol_button_minor();
+			(obj.title) = () => ("Вернуть");
+			(obj.click) = (next) => ((this.restore(id, next)));
+			return obj;
+		}
+		person_sub(id){
+			return [
+				(this.Person_name(id)), 
+				(this.Person_status(id)), 
+				(this.Dismiss(id)), 
+				(this.Restore(id))
+			];
+		}
+		Person(id){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ((this.person_sub(id)));
+			return obj;
+		}
+		people_rows(){
+			return [(this.Person(id))];
+		}
+		People_rows(){
+			const obj = new this.$.$mol_list();
+			(obj.rows) = () => ((this.people_rows()));
+			return obj;
+		}
+		People(){
+			const obj = new this.$.$mol_labeler();
+			(obj.title) = () => ("Список");
+			(obj.content) = () => ([(this.People_rows())]);
+			return obj;
+		}
+		Warning(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ("Отзывайте, когда волонтёр закончил и его отметки дошли. То, что осталось на его телефоне неотправленным, пропадёт.");
+			return obj;
+		}
+		blocks(){
+			return [
+				(this.Pending()), 
+				(this.Paste()), 
+				(this.Invite()), 
+				(this.People()), 
+				(this.Warning())
+			];
+		}
+		drive(){
+			const obj = new this.$.$bog_basket_drive();
+			return obj;
+		}
+		admit(next){
+			if(next !== undefined) return next;
+			return "";
+		}
+		invite_link(){
+			return "";
+		}
+		title(){
+			return "Волонтёры";
+		}
+		tools(){
+			return [(this.Close())];
+		}
+		body(){
+			return (this.blocks());
+		}
+	};
+	($mol_mem(($.$bog_basket_team.prototype), "Close_icon"));
+	($mol_mem(($.$bog_basket_team.prototype), "Close"));
+	($mol_mem(($.$bog_basket_team.prototype), "Pending_text"));
+	($mol_mem(($.$bog_basket_team.prototype), "name"));
+	($mol_mem(($.$bog_basket_team.prototype), "admit_run"));
+	($mol_mem(($.$bog_basket_team.prototype), "Name"));
+	($mol_mem(($.$bog_basket_team.prototype), "Admit"));
+	($mol_mem(($.$bog_basket_team.prototype), "Pending"));
+	($mol_mem(($.$bog_basket_team.prototype), "paste"));
+	($mol_mem(($.$bog_basket_team.prototype), "Paste_field"));
+	($mol_mem(($.$bog_basket_team.prototype), "Paste"));
+	($mol_mem(($.$bog_basket_team.prototype), "Invite_hint"));
+	($mol_mem(($.$bog_basket_team.prototype), "Invite_code"));
+	($mol_mem(($.$bog_basket_team.prototype), "Invite_copy"));
+	($mol_mem(($.$bog_basket_team.prototype), "Invite_list"));
+	($mol_mem(($.$bog_basket_team.prototype), "Invite"));
+	($mol_mem_key(($.$bog_basket_team.prototype), "person_name"));
+	($mol_mem_key(($.$bog_basket_team.prototype), "Person_name"));
+	($mol_mem_key(($.$bog_basket_team.prototype), "Person_status"));
+	($mol_mem_key(($.$bog_basket_team.prototype), "dismiss"));
+	($mol_mem_key(($.$bog_basket_team.prototype), "Dismiss"));
+	($mol_mem_key(($.$bog_basket_team.prototype), "restore"));
+	($mol_mem_key(($.$bog_basket_team.prototype), "Restore"));
+	($mol_mem_key(($.$bog_basket_team.prototype), "Person"));
+	($mol_mem(($.$bog_basket_team.prototype), "People_rows"));
+	($mol_mem(($.$bog_basket_team.prototype), "People"));
+	($mol_mem(($.$bog_basket_team.prototype), "Warning"));
+	($mol_mem(($.$bog_basket_team.prototype), "drive"));
+	($mol_mem(($.$bog_basket_team.prototype), "admit"));
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $bog_basket_team extends $.$bog_basket_team {
+            pass() {
+                const text = this.admit();
+                if (!/^[\w-]{86}$/.test(text))
+                    return null;
+                return $giper_baza_auth_pass.from(text);
+            }
+            paste(next) {
+                const text = next?.match(/admit=([\w%-]+)/)?.[1];
+                if (text)
+                    this.admit(decodeURIComponent(text));
+                return '';
+            }
+            blocks() {
+                return [
+                    ...this.admit() ? [this.Pending()] : [],
+                    ...this.lords().length ? [this.People(), this.Warning()] : [],
+                    this.Invite(),
+                    this.Paste(),
+                ];
+            }
+            admitted(lord) {
+                return $bog_basket_tier(this.drive().land(), new $giper_baza_link(lord)) >= $giper_baza_rank_tier.post;
+            }
+            admit_enabled() {
+                const pass = this.pass();
+                return Boolean(pass && !this.admitted(pass.lord().str));
+            }
+            pending_text() {
+                const pass = this.pass();
+                if (!pass)
+                    return 'Ссылка повреждена, попросите волонтёра прислать её ещё раз.';
+                if (this.admitted(pass.lord().str))
+                    return 'Этот волонтёр уже допущен.';
+                return 'Волонтёр просит допуск.';
+            }
+            lords() {
+                return (this.drive().Volunteers()?.keys() ?? []).map(String);
+            }
+            people_rows() {
+                return this.lords().map(lord => this.Person(lord));
+            }
+            person_name(lord, next) {
+                return this.drive().Volunteers(next === undefined ? undefined : 'auto')?.key(lord, next === undefined ? undefined : 'auto')?.val(next) ?? '';
+            }
+            person_status(lord) {
+                return this.admitted(lord) ? 'допущен' : 'отозван';
+            }
+            person_sub(lord) {
+                return [
+                    this.Person_name(lord),
+                    this.Person_status(lord),
+                    this.admitted(lord) ? this.Dismiss(lord) : this.Restore(lord),
+                ];
+            }
+            dismiss(lord) {
+                $bog_basket_dismiss(this.drive(), new $giper_baza_link(lord));
+            }
+            restore(lord) {
+                this.drive().land().lord_rank(new $giper_baza_link(lord), $giper_baza_rank_post('just'));
+            }
+            admit_run() {
+                const pass = this.pass();
+                if (!pass)
+                    return;
+                $bog_basket_admit(this.drive(), pass, this.name().trim() || `Волонтёр ${this.lords().length + 1}`);
+                this.name('');
+                this.admit('');
+            }
+        }
+        __decorate([
+            $mol_action
+        ], $bog_basket_team.prototype, "dismiss", null);
+        __decorate([
+            $mol_action
+        ], $bog_basket_team.prototype, "restore", null);
+        __decorate([
+            $mol_action
+        ], $bog_basket_team.prototype, "admit_run", null);
+        $$.$bog_basket_team = $bog_basket_team;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        $mol_style_define($bog_basket_team, {
+            flex: {
+                basis: '28rem',
+                grow: 1,
+            },
+            Pending: {
+                padding: $mol_gap.block,
+                gap: $mol_gap.space,
+                background: {
+                    color: $mol_theme.card,
+                },
+            },
+            Warning: {
+                padding: $mol_gap.block,
+                color: $mol_theme.shade,
+            },
+            Invite_code: {
+                width: '14rem',
+                height: '14rem',
+                margin: $mol_gap.block,
+            },
+            Person: {
+                align: {
+                    items: 'center',
+                },
+            },
+            Person_name: {
+                flex: {
+                    grow: 1,
+                    shrink: 1,
+                    basis: '8rem',
+                },
+            },
+            Person_status: {
+                color: $mol_theme.shade,
+            },
+        });
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+	($.$mol_icon_menu) = class $mol_icon_menu extends ($.$mol_icon) {
+		path(){
+			return "M3,6H21V8H3V6M3,11H21V13H3V11M3,16H21V18H3V16Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_menu_down) = class $mol_icon_menu_down extends ($.$mol_icon) {
+		path(){
+			return "M7,10L12,15L17,10H7Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_menu_down_outline) = class $mol_icon_menu_down_outline extends ($.$mol_icon) {
+		path(){
+			return "M18,9V10.5L12,16.5L6,10.5V9H18M12,13.67L14.67,11H9.33L12,13.67Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_menu_up) = class $mol_icon_menu_up extends ($.$mol_icon) {
+		path(){
+			return "M7,15L12,10L17,15H7Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_icon_menu_up_outline) = class $mol_icon_menu_up_outline extends ($.$mol_icon) {
+		path(){
+			return "M18,16V14.5L12,8.5L6,14.5V16H18M12,11.33L14.67,14H9.33L12,11.33Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$mol_number) = class $mol_number extends ($.$mol_view) {
+		precision(){
+			return 0;
+		}
+		event_dec(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		event_inc(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		event_dec_boost(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		event_inc_boost(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Hotkey(){
+			const obj = new this.$.$mol_hotkey();
+			(obj.key) = () => ({
+				"down": (next) => (this.event_dec(next)), 
+				"up": (next) => (this.event_inc(next)), 
+				"pageDown": (next) => (this.event_dec_boost(next)), 
+				"pageUp": (next) => (this.event_inc_boost(next))
+			});
+			return obj;
+		}
+		type(){
+			return "text";
+		}
+		value_string(next){
+			if(next !== undefined) return next;
+			return "";
+		}
+		hint(){
+			return " ";
+		}
+		string_enabled(){
+			return (this.enabled());
+		}
+		submit(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		selection(next){
+			if(next !== undefined) return next;
+			return [];
+		}
+		String(){
+			const obj = new this.$.$mol_string();
+			(obj.type) = () => ((this.type()));
+			(obj.keyboard) = () => ("decimal");
+			(obj.value) = (next) => ((this.value_string(next)));
+			(obj.hint) = () => ((this.hint()));
+			(obj.enabled) = () => ((this.string_enabled()));
+			(obj.submit) = (next) => ((this.submit(next)));
+			(obj.selection) = (next) => ((this.selection(next)));
+			return obj;
+		}
+		dec_enabled(){
+			return (this.enabled());
+		}
+		dec_icon(){
+			const obj = new this.$.$mol_icon_menu_down_outline();
+			return obj;
+		}
+		Dec(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.event_click) = (next) => ((this.event_dec(next)));
+			(obj.enabled) = () => ((this.dec_enabled()));
+			(obj.sub) = () => ([(this.dec_icon())]);
+			return obj;
+		}
+		inc_enabled(){
+			return (this.enabled());
+		}
+		inc_icon(){
+			const obj = new this.$.$mol_icon_menu_up_outline();
+			return obj;
+		}
+		Inc(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.event_click) = (next) => ((this.event_inc(next)));
+			(obj.enabled) = () => ((this.inc_enabled()));
+			(obj.sub) = () => ([(this.inc_icon())]);
+			return obj;
+		}
+		precision_view(){
+			return (this.precision());
+		}
+		precision_change(){
+			return (this.precision());
+		}
+		boost(){
+			return 10;
+		}
+		value_min(){
+			return -Infinity;
+		}
+		value_max(){
+			return +Infinity;
+		}
+		value(next){
+			if(next !== undefined) return next;
+			return +NaN;
+		}
+		enabled(){
+			return true;
+		}
+		plugins(){
+			return [(this.Hotkey())];
+		}
+		sub(){
+			return [
+				(this.String()), 
+				(this.Dec()), 
+				(this.Inc())
+			];
+		}
+	};
+	($mol_mem(($.$mol_number.prototype), "event_dec"));
+	($mol_mem(($.$mol_number.prototype), "event_inc"));
+	($mol_mem(($.$mol_number.prototype), "event_dec_boost"));
+	($mol_mem(($.$mol_number.prototype), "event_inc_boost"));
+	($mol_mem(($.$mol_number.prototype), "Hotkey"));
+	($mol_mem(($.$mol_number.prototype), "value_string"));
+	($mol_mem(($.$mol_number.prototype), "submit"));
+	($mol_mem(($.$mol_number.prototype), "selection"));
+	($mol_mem(($.$mol_number.prototype), "String"));
+	($mol_mem(($.$mol_number.prototype), "dec_icon"));
+	($mol_mem(($.$mol_number.prototype), "Dec"));
+	($mol_mem(($.$mol_number.prototype), "inc_icon"));
+	($mol_mem(($.$mol_number.prototype), "Inc"));
+	($mol_mem(($.$mol_number.prototype), "value"));
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    $mol_style_attach("mol/number/number.css", "[mol_number] {\n\tdisplay: flex;\n\tflex: 0 1 auto;\n\tposition: relative;\n\talign-items: stretch;\n\tmax-width: 100%;\n}\n\n[mol_number_string] {\n\tappearance: textfield;\n\tflex: 1 1 7rem;\n\twidth: 7rem;\n}\n\n[mol_number_string]::-webkit-inner-spin-button {\n\tdisplay: none;\n}\n");
+})($ || ($ = {}));
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        /**
+         * Component for entering, incrementing and decrementing numeric values.
+         * @see https://mol.hyoo.ru/#!section=demos/demo=mol_number_demo
+         */
+        class $mol_number extends $.$mol_number {
+            sub() {
+                return [
+                    this.String(),
+                    ...this.dec_enabled() ? [this.Dec()] : [],
+                    ...this.inc_enabled() ? [this.Inc()] : [],
+                ];
+            }
+            value_limited(val) {
+                if (Number.isNaN(val))
+                    return this.value(val);
+                if (val === undefined)
+                    return this.value();
+                const min = this.value_min();
+                const max = this.value_max();
+                if (val < min)
+                    return this.value(min);
+                if (val > max)
+                    return this.value(max);
+                return this.value(val);
+            }
+            event_dec(next) {
+                this.value_limited((this.value_limited() || 0) - this.precision_change());
+                next?.preventDefault();
+            }
+            precision_change() {
+                return this.precision() || 1;
+            }
+            event_inc(next) {
+                this.value_limited((this.value_limited() || 0) + this.precision_change());
+                next?.preventDefault();
+            }
+            event_dec_boost(next) {
+                this.value_limited((this.value_limited() || 0) - this.precision_change() * this.boost());
+                next?.preventDefault();
+            }
+            event_inc_boost(next) {
+                this.value_limited((this.value_limited() || 0) + this.precision_change() * this.boost());
+                next?.preventDefault();
+            }
+            round(val) {
+                if (Number.isNaN(val))
+                    return '';
+                if (val === 0)
+                    return '0';
+                if (!val)
+                    return '';
+                const precision_view = this.precision_view();
+                if (precision_view === 0)
+                    return String(val);
+                if (precision_view >= 1) {
+                    return (val / precision_view).toFixed();
+                }
+                else {
+                    const fixed_number = Math.log10(1 / precision_view);
+                    return val.toFixed(Math.ceil(fixed_number));
+                }
+            }
+            value_string(next) {
+                // Вытягиваем value
+                // Если кто-то поменяет из вне value, value_string надо обновить
+                const current = this.round(this.value_limited());
+                if (next === undefined)
+                    return current;
+                const precision = this.precision_view();
+                // Точку в конце поставить нельзя, если precision_view целое число > 0
+                if (precision > 0 && precision - Math.floor(precision) === 0)
+                    next = next.replace(/[.,]/g, '');
+                // Запятые меняем на точки, удаляем не-цифры и не-точки и лишние ноли в начале целой части.
+                // Минус получится ввести только в начале.
+                next = (this.value_min() < 0 && next.startsWith('-') ? '-' : '')
+                    + next.replace(/,/g, '.').replace(/[^\d\.]/g, '').replace(/^0{2,}/, '0');
+                let dot_pos = next.indexOf('.');
+                if (dot_pos !== -1) {
+                    const prev = $mol_wire_probe(() => this.value_string()) ?? '';
+                    const dot_pos_prev = prev.indexOf('.');
+                    // Определяем где относительно предыдущей точки юзер поставил новую
+                    if (dot_pos_prev === dot_pos)
+                        dot_pos = next.lastIndexOf('.');
+                    // Из частей до и после новой точки старую точку удаляем
+                    const frac = next.slice(dot_pos + 1).replace(/\./g, '');
+                    // Если точка идет первой, перед ней пишем 0, что бы форматирование выглядело нормально в mask
+                    next = (next.slice(0, dot_pos) || '0').replace(/\./g, '') + '.' + frac;
+                }
+                // Оставляем старое значение в value есть сочетание, приводящие к NaN, например -.
+                if (Number.isNaN(Number(next)))
+                    return next;
+                if (next.endsWith('.'))
+                    return next;
+                if (next.endsWith('-'))
+                    return next;
+                // Если пустая строка - сетим NaN
+                // Применяем округления.
+                this.value_limited(Number(next || Number.NaN));
+                // Возвращаем все-равно не нормализованное значение
+                // Иначе нельзя ввести будет 10, если min/max 5..10
+                return next;
+            }
+            dec_enabled() {
+                return this.enabled() && (!((this.value() || 0) <= this.value_min()));
+            }
+            inc_enabled() {
+                return this.enabled() && (!((this.value() || 0) >= this.value_max()));
+            }
+        }
+        __decorate([
+            $mol_mem
+        ], $mol_number.prototype, "sub", null);
+        __decorate([
+            $mol_mem
+        ], $mol_number.prototype, "value_string", null);
+        __decorate([
+            $mol_mem
+        ], $mol_number.prototype, "dec_enabled", null);
+        __decorate([
+            $mol_mem
+        ], $mol_number.prototype, "inc_enabled", null);
+        $$.$mol_number = $mol_number;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+	($.$bog_basket_kit) = class $bog_basket_kit extends ($.$mol_page) {
+		Close_icon(){
+			const obj = new this.$.$mol_icon_close();
+			return obj;
+		}
+		Close(){
+			const obj = new this.$.$mol_link();
+			(obj.hint) = () => ("Закрыть");
+			(obj.arg) = () => ({"screen": null});
+			(obj.sub) = () => ([(this.Close_icon())]);
+			return obj;
+		}
+		Hint(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ("Из чего собирается один набор. План точки считается по нему. Цена нужна для подсказки покупателю, её можно не указывать.");
+			return obj;
+		}
+		good_title(id, next){
+			if(next !== undefined) return next;
+			return "";
+		}
+		Good_title(id){
+			const obj = new this.$.$mol_string();
+			(obj.hint) = () => ("Продукт");
+			(obj.value) = (next) => ((this.good_title(id, next)));
+			return obj;
+		}
+		drop(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Drop_icon(id){
+			const obj = new this.$.$mol_icon_close();
+			return obj;
+		}
+		Drop(id){
+			const obj = new this.$.$mol_button_minor();
+			(obj.hint) = () => ("Убрать продукт");
+			(obj.click) = (next) => ((this.drop(id, next)));
+			(obj.sub) = () => ([(this.Drop_icon(id))]);
+			return obj;
+		}
+		row_head(id){
+			return [(this.Good_title(id)), (this.Drop(id))];
+		}
+		Row_head(id){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ((this.row_head(id)));
+			return obj;
+		}
+		good_kit(id, next){
+			if(next !== undefined) return next;
+			return 0;
+		}
+		Kit_number(id){
+			const obj = new this.$.$mol_number();
+			(obj.value_min) = () => (0);
+			(obj.value) = (next) => ((this.good_kit(id, next)));
+			return obj;
+		}
+		Kit(id){
+			const obj = new this.$.$mol_labeler();
+			(obj.title) = () => ("В наборе, шт.");
+			(obj.content) = () => ([(this.Kit_number(id))]);
+			return obj;
+		}
+		good_weight(id, next){
+			if(next !== undefined) return next;
+			return 0;
+		}
+		Weight_number(id){
+			const obj = new this.$.$mol_number();
+			(obj.value_min) = () => (0);
+			(obj.precision) = () => (0.01);
+			(obj.value) = (next) => ((this.good_weight(id, next)));
+			return obj;
+		}
+		Weight(id){
+			const obj = new this.$.$mol_labeler();
+			(obj.title) = () => ("Вес, кг");
+			(obj.content) = () => ([(this.Weight_number(id))]);
+			return obj;
+		}
+		good_price(id, next){
+			if(next !== undefined) return next;
+			return 0;
+		}
+		Price_number(id){
+			const obj = new this.$.$mol_number();
+			(obj.value_min) = () => (0);
+			(obj.value) = (next) => ((this.good_price(id, next)));
+			return obj;
+		}
+		Price(id){
+			const obj = new this.$.$mol_labeler();
+			(obj.title) = () => ("Цена, ₽");
+			(obj.content) = () => ([(this.Price_number(id))]);
+			return obj;
+		}
+		Numbers(id){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([
+				(this.Kit(id)), 
+				(this.Weight(id)), 
+				(this.Price(id))
+			]);
+			return obj;
+		}
+		Row(id){
+			const obj = new this.$.$mol_list();
+			(obj.rows) = () => ([(this.Row_head(id)), (this.Numbers(id))]);
+			return obj;
+		}
+		rows(){
+			return [(this.Row(id))];
+		}
+		Rows(){
+			const obj = new this.$.$mol_list();
+			(obj.rows) = () => ((this.rows()));
+			return obj;
+		}
+		add(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Add(){
+			const obj = new this.$.$mol_button_major();
+			(obj.title) = () => ("Добавить продукт");
+			(obj.click) = (next) => ((this.add(next)));
+			return obj;
+		}
+		drive(){
+			const obj = new this.$.$bog_basket_drive();
+			return obj;
+		}
+		title(){
+			return "Набор";
+		}
+		tools(){
+			return [(this.Close())];
+		}
+		body(){
+			return [
+				(this.Hint()), 
+				(this.Rows()), 
+				(this.Add())
+			];
+		}
+	};
+	($mol_mem(($.$bog_basket_kit.prototype), "Close_icon"));
+	($mol_mem(($.$bog_basket_kit.prototype), "Close"));
+	($mol_mem(($.$bog_basket_kit.prototype), "Hint"));
+	($mol_mem_key(($.$bog_basket_kit.prototype), "good_title"));
+	($mol_mem_key(($.$bog_basket_kit.prototype), "Good_title"));
+	($mol_mem_key(($.$bog_basket_kit.prototype), "drop"));
+	($mol_mem_key(($.$bog_basket_kit.prototype), "Drop_icon"));
+	($mol_mem_key(($.$bog_basket_kit.prototype), "Drop"));
+	($mol_mem_key(($.$bog_basket_kit.prototype), "Row_head"));
+	($mol_mem_key(($.$bog_basket_kit.prototype), "good_kit"));
+	($mol_mem_key(($.$bog_basket_kit.prototype), "Kit_number"));
+	($mol_mem_key(($.$bog_basket_kit.prototype), "Kit"));
+	($mol_mem_key(($.$bog_basket_kit.prototype), "good_weight"));
+	($mol_mem_key(($.$bog_basket_kit.prototype), "Weight_number"));
+	($mol_mem_key(($.$bog_basket_kit.prototype), "Weight"));
+	($mol_mem_key(($.$bog_basket_kit.prototype), "good_price"));
+	($mol_mem_key(($.$bog_basket_kit.prototype), "Price_number"));
+	($mol_mem_key(($.$bog_basket_kit.prototype), "Price"));
+	($mol_mem_key(($.$bog_basket_kit.prototype), "Numbers"));
+	($mol_mem_key(($.$bog_basket_kit.prototype), "Row"));
+	($mol_mem(($.$bog_basket_kit.prototype), "Rows"));
+	($mol_mem(($.$bog_basket_kit.prototype), "add"));
+	($mol_mem(($.$bog_basket_kit.prototype), "Add"));
+	($mol_mem(($.$bog_basket_kit.prototype), "drive"));
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $bog_basket_kit extends $.$bog_basket_kit {
+            good(id) {
+                return this.drive().land().Pawn($bog_basket_good).Head(new $giper_baza_link(id));
+            }
+            rows() {
+                return $bog_basket_goods(this.drive()).map(good => this.Row(good.head().str));
+            }
+            row_head(id) {
+                return [
+                    this.Good_title(id),
+                    ...this.droppable(id) ? [this.Drop(id)] : [],
+                ];
+            }
+            droppable(id) {
+                return $bog_basket_points_all(this.drive()).every(point => !$bog_basket_got(point, this.good(id)));
+            }
+            good_title(id, next) {
+                return this.good(id).Title(next === undefined ? undefined : 'auto')?.val(next) ?? '';
+            }
+            good_kit(id, next) {
+                return this.good(id).Kit(next === undefined ? undefined : 'auto')?.val(next === undefined ? undefined : next || 0) ?? 0;
+            }
+            good_weight(id, next) {
+                return this.good(id).Weight(next === undefined ? undefined : 'auto')?.val(next === undefined ? undefined : next || 0) ?? 0;
+            }
+            good_price(id, next) {
+                return this.good(id).Price(next === undefined ? undefined : 'auto')?.val(next === undefined ? undefined : next || 0) ?? 0;
+            }
+            add() {
+                $bog_basket_good_make(this.drive(), '', 0, 1, 0);
+            }
+            drop(id) {
+                if (this.droppable(id))
+                    this.drive().Goods('auto').cut(this.good(id).link());
+            }
+        }
+        __decorate([
+            $mol_action
+        ], $bog_basket_kit.prototype, "add", null);
+        __decorate([
+            $mol_action
+        ], $bog_basket_kit.prototype, "drop", null);
+        $$.$bog_basket_kit = $bog_basket_kit;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        $mol_style_define($bog_basket_kit, {
+            flex: {
+                basis: '28rem',
+                grow: 1,
+            },
+            Hint: {
+                padding: $mol_gap.block,
+            },
+            Rows: {
+                gap: $mol_gap.block,
+                padding: $mol_gap.block,
+            },
+            Row: {
+                background: {
+                    color: $mol_theme.card,
+                },
+                border: {
+                    radius: $mol_gap.round,
+                },
+            },
+            Good_title: {
+                flex: {
+                    grow: 1,
+                },
+            },
+            Numbers: {
+                flex: {
+                    wrap: 'wrap',
+                },
+            },
+            Kit: {
+                flex: {
+                    grow: 1,
+                    shrink: 1,
+                    basis: '6rem',
+                },
+            },
+            Weight: {
+                flex: {
+                    grow: 1,
+                    shrink: 1,
+                    basis: '6rem',
+                },
+            },
+            Price: {
+                flex: {
+                    grow: 1,
+                    shrink: 1,
+                    basis: '6rem',
+                },
+            },
+            Add: {
+                margin: $mol_gap.block,
+                align: {
+                    self: 'flex-start',
+                },
+            },
+        });
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+	($.$bog_basket_spot) = class $bog_basket_spot extends ($.$mol_page) {
+		point_title_text(){
+			return "";
+		}
+		Close_icon(){
+			const obj = new this.$.$mol_icon_close();
+			return obj;
+		}
+		Close(){
+			const obj = new this.$.$mol_link();
+			(obj.hint) = () => ("Закрыть");
+			(obj.arg) = () => ({"screen": null, "point": null});
+			(obj.sub) = () => ([(this.Close_icon())]);
+			return obj;
+		}
+		point_title(next){
+			if(next !== undefined) return next;
+			return "";
+		}
+		Title_field(){
+			const obj = new this.$.$mol_string();
+			(obj.hint) = () => ("Название");
+			(obj.value) = (next) => ((this.point_title(next)));
+			return obj;
+		}
+		point_address(next){
+			if(next !== undefined) return next;
+			return "";
+		}
+		Address(){
+			const obj = new this.$.$mol_string();
+			(obj.hint) = () => ("Адрес");
+			(obj.value) = (next) => ((this.point_address(next)));
+			return obj;
+		}
+		point_kits(next){
+			if(next !== undefined) return next;
+			return 0;
+		}
+		Kits(){
+			const obj = new this.$.$mol_number();
+			(obj.value_min) = () => (0);
+			(obj.value) = (next) => ((this.point_kits(next)));
+			return obj;
+		}
+		Kits_label(){
+			const obj = new this.$.$mol_labeler();
+			(obj.title) = () => ("План, наборов");
+			(obj.content) = () => ([(this.Kits())]);
+			return obj;
+		}
+		Form(){
+			const obj = new this.$.$mol_list();
+			(obj.rows) = () => ([
+				(this.Title_field()), 
+				(this.Address()), 
+				(this.Kits_label())
+			]);
+			return obj;
+		}
+		good_title(id){
+			return "";
+		}
+		good_got(id){
+			return 0;
+		}
+		good_need(id){
+			return 0;
+		}
+		Good(id){
+			const obj = new this.$.$bog_basket_bar();
+			(obj.title) = () => ((this.good_title(id)));
+			(obj.got) = () => ((this.good_got(id)));
+			(obj.need) = () => ((this.good_need(id)));
+			return obj;
+		}
+		good_rows(){
+			return [(this.Good(id))];
+		}
+		Goods_rows(){
+			const obj = new this.$.$mol_list();
+			(obj.rows) = () => ((this.good_rows()));
+			return obj;
+		}
+		Goods(){
+			const obj = new this.$.$mol_labeler();
+			(obj.title) = () => ("Принято");
+			(obj.content) = () => ([(this.Goods_rows())]);
+			return obj;
+		}
+		shift_text(id){
+			return "";
+		}
+		Shift(id){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ((this.shift_text(id)));
+			return obj;
+		}
+		shift_rows(){
+			return [(this.Shift(id))];
+		}
+		Shifts_rows(){
+			const obj = new this.$.$mol_list();
+			(obj.rows) = () => ((this.shift_rows()));
+			return obj;
+		}
+		Shifts(){
+			const obj = new this.$.$mol_labeler();
+			(obj.title) = () => ("Смены");
+			(obj.content) = () => ([(this.Shifts_rows())]);
+			return obj;
+		}
+		Buyer_hint(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ("Распечатайте и повесьте у входа: покупатель увидит, чего не хватает именно здесь.");
+			return obj;
+		}
+		Buyer_code(){
+			const obj = new this.$.$bog_qr();
+			(obj.uri) = () => ((this.buyer_link()));
+			(obj.gradient_stops) = () => (["var(--mol_theme_text)", "var(--mol_theme_text)"]);
+			return obj;
+		}
+		Buyer_open(){
+			const obj = new this.$.$mol_link();
+			(obj.uri) = () => ((this.buyer_link()));
+			(obj.target) = () => ("_blank");
+			(obj.title) = () => ("Открыть страницу покупателя");
+			return obj;
+		}
+		Buyer_list(){
+			const obj = new this.$.$mol_list();
+			(obj.rows) = () => ([
+				(this.Buyer_hint()), 
+				(this.Buyer_code()), 
+				(this.Buyer_open())
+			]);
+			return obj;
+		}
+		Buyer(){
+			const obj = new this.$.$mol_labeler();
+			(obj.title) = () => ("Код для покупателей");
+			(obj.content) = () => ([(this.Buyer_list())]);
+			return obj;
+		}
+		drop(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Drop(){
+			const obj = new this.$.$mol_button_minor();
+			(obj.title) = () => ("Удалить точку");
+			(obj.click) = (next) => ((this.drop(next)));
+			return obj;
+		}
+		blocks(){
+			return [
+				(this.Form()), 
+				(this.Goods()), 
+				(this.Shifts()), 
+				(this.Buyer()), 
+				(this.Drop())
+			];
+		}
+		drive(){
+			const obj = new this.$.$bog_basket_drive();
+			return obj;
+		}
+		point(){
+			const obj = new this.$.$bog_basket_point();
+			return obj;
+		}
+		buyer_link(){
+			return "";
+		}
+		drop_done(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		title(){
+			return (this.point_title_text());
+		}
+		tools(){
+			return [(this.Close())];
+		}
+		body(){
+			return (this.blocks());
+		}
+	};
+	($mol_mem(($.$bog_basket_spot.prototype), "Close_icon"));
+	($mol_mem(($.$bog_basket_spot.prototype), "Close"));
+	($mol_mem(($.$bog_basket_spot.prototype), "point_title"));
+	($mol_mem(($.$bog_basket_spot.prototype), "Title_field"));
+	($mol_mem(($.$bog_basket_spot.prototype), "point_address"));
+	($mol_mem(($.$bog_basket_spot.prototype), "Address"));
+	($mol_mem(($.$bog_basket_spot.prototype), "point_kits"));
+	($mol_mem(($.$bog_basket_spot.prototype), "Kits"));
+	($mol_mem(($.$bog_basket_spot.prototype), "Kits_label"));
+	($mol_mem(($.$bog_basket_spot.prototype), "Form"));
+	($mol_mem_key(($.$bog_basket_spot.prototype), "Good"));
+	($mol_mem(($.$bog_basket_spot.prototype), "Goods_rows"));
+	($mol_mem(($.$bog_basket_spot.prototype), "Goods"));
+	($mol_mem_key(($.$bog_basket_spot.prototype), "Shift"));
+	($mol_mem(($.$bog_basket_spot.prototype), "Shifts_rows"));
+	($mol_mem(($.$bog_basket_spot.prototype), "Shifts"));
+	($mol_mem(($.$bog_basket_spot.prototype), "Buyer_hint"));
+	($mol_mem(($.$bog_basket_spot.prototype), "Buyer_code"));
+	($mol_mem(($.$bog_basket_spot.prototype), "Buyer_open"));
+	($mol_mem(($.$bog_basket_spot.prototype), "Buyer_list"));
+	($mol_mem(($.$bog_basket_spot.prototype), "Buyer"));
+	($mol_mem(($.$bog_basket_spot.prototype), "drop"));
+	($mol_mem(($.$bog_basket_spot.prototype), "Drop"));
+	($mol_mem(($.$bog_basket_spot.prototype), "drive"));
+	($mol_mem(($.$bog_basket_spot.prototype), "point"));
+	($mol_mem(($.$bog_basket_spot.prototype), "drop_done"));
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $bog_basket_spot extends $.$bog_basket_spot {
+            good(id) {
+                return this.drive().land().Pawn($bog_basket_good).Head(new $giper_baza_link(id));
+            }
+            shift(id) {
+                return this.drive().land().Pawn($bog_basket_shift).Head(new $giper_baza_link(id));
+            }
+            blocks() {
+                return [
+                    this.Form(),
+                    this.Goods(),
+                    ...this.shift_rows().length ? [this.Shifts()] : [],
+                    ...this.buyer_link() ? [this.Buyer()] : [],
+                    ...this.droppable() ? [this.Drop()] : [],
+                ];
+            }
+            point_title_text() {
+                return this.point_title() || 'Без названия';
+            }
+            point_title(next) {
+                return this.point().Title(next === undefined ? undefined : 'auto')?.val(next) ?? '';
+            }
+            point_address(next) {
+                return this.point().Address(next === undefined ? undefined : 'auto')?.val(next) ?? '';
+            }
+            point_kits(next) {
+                return this.point().Kits(next === undefined ? undefined : 'auto')?.val(next === undefined ? undefined : next || 0) ?? 0;
+            }
+            good_rows() {
+                return $bog_basket_goods(this.drive()).map(good => this.Good(good.head().str));
+            }
+            good_title(id) {
+                return this.good(id).Title()?.val() ?? '';
+            }
+            good_got(id) {
+                return $bog_basket_got(this.point(), this.good(id));
+            }
+            good_need(id) {
+                return $bog_basket_need(this.point(), this.good(id));
+            }
+            shift_rows() {
+                return $bog_basket_shifts(this.point()).map(shift => this.Shift(shift.head().str));
+            }
+            shift_text(id) {
+                const shift = this.shift(id);
+                const name = this.drive().Volunteers()?.key(shift.Volunteer()?.val() ?? '')?.val() || 'Координатор';
+                const count = $bog_basket_goods(this.drive()).reduce((sum, good) => sum + $bog_basket_count(shift, good), 0);
+                const from = shift.Started()?.val()?.toString('DD.MM hh:mm') ?? '';
+                const to = shift.Finished()?.val()?.toString('hh:mm') ?? 'идёт';
+                return `${name}: ${count} шт., ${from} – ${to}`;
+            }
+            droppable() {
+                return !$bog_basket_shifts(this.point()).length;
+            }
+            drop() {
+                if (!this.droppable())
+                    return;
+                this.drive().Points('auto').cut(this.point().link());
+                this.drop_done(null);
+            }
+        }
+        __decorate([
+            $mol_action
+        ], $bog_basket_spot.prototype, "drop", null);
+        $$.$bog_basket_spot = $bog_basket_spot;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        $mol_style_define($bog_basket_spot, {
+            flex: {
+                basis: '28rem',
+                grow: 1,
+            },
+            Form: {
+                padding: $mol_gap.block,
+                gap: $mol_gap.space,
+            },
+            Goods_rows: {
+                flex: {
+                    grow: 1,
+                },
+                gap: $mol_gap.block,
+            },
+            Buyer_code: {
+                width: '14rem',
+                height: '14rem',
+                margin: $mol_gap.block,
+            },
+            Drop: {
+                margin: $mol_gap.block,
+                align: {
+                    self: 'flex-start',
+                },
+            },
+        });
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+	($.$mol_icon_minus) = class $mol_icon_minus extends ($.$mol_icon) {
+		path(){
+			return "M19,13H5V11H19V13Z";
+		}
+	};
+
+
+;
+"use strict";
+
+
+;
+	($.$bog_basket_tile) = class $bog_basket_tile extends ($.$mol_view) {
+		full(){
+			return false;
+		}
+		add(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		title(){
+			return "";
+		}
+		got(){
+			return 0;
+		}
+		need(){
+			return 0;
+		}
+		Bar(){
+			const obj = new this.$.$bog_basket_bar();
+			(obj.title) = () => ((this.title()));
+			(obj.got) = () => ((this.got()));
+			(obj.need) = () => ((this.need()));
+			return obj;
+		}
 		Add(){
 			const obj = new this.$.$mol_button_minor();
 			(obj.hint) = () => ("Принять одну");
 			(obj.click) = (next) => ((this.add(next)));
-			(obj.sub) = () => ([(this.Head()), (this.Progress())]);
+			(obj.sub) = () => ([(this.Bar())]);
 			return obj;
 		}
 		mine_text(){
@@ -20294,12 +22378,6 @@ var $;
 			(obj.sub) = () => ((this.drop_content()));
 			return obj;
 		}
-		got(){
-			return 0;
-		}
-		need(){
-			return 0;
-		}
 		mine(next){
 			if(next !== undefined) return next;
 			return 0;
@@ -20316,10 +22394,7 @@ var $;
 		}
 	};
 	($mol_mem(($.$bog_basket_tile.prototype), "add"));
-	($mol_mem(($.$bog_basket_tile.prototype), "Title"));
-	($mol_mem(($.$bog_basket_tile.prototype), "Total"));
-	($mol_mem(($.$bog_basket_tile.prototype), "Head"));
-	($mol_mem(($.$bog_basket_tile.prototype), "Progress"));
+	($mol_mem(($.$bog_basket_tile.prototype), "Bar"));
 	($mol_mem(($.$bog_basket_tile.prototype), "Add"));
 	($mol_mem(($.$bog_basket_tile.prototype), "Mine"));
 	($mol_mem(($.$bog_basket_tile.prototype), "drop"));
@@ -20341,12 +22416,6 @@ var $;
         class $bog_basket_tile extends $.$bog_basket_tile {
             full() {
                 return this.need() > 0 && this.got() >= this.need();
-            }
-            total_text() {
-                return this.need() ? `${this.got()} из ${this.need()}` : String(this.got());
-            }
-            progress() {
-                return this.need() ? Math.min(1, this.got() / this.need()) : 0;
             }
             mine_text() {
                 return this.mine() ? `+${this.mine()}` : '';
@@ -20400,45 +22469,13 @@ var $;
             },
             Add: {
                 flex: {
-                    direction: 'column',
                     grow: 1,
                     shrink: 1,
                     basis: 0,
                 },
-                align: {
-                    items: 'stretch',
-                },
                 minHeight: '4.5rem',
                 minWidth: 0,
                 userSelect: 'none',
-            },
-            Head: {
-                flex: {
-                    wrap: 'wrap',
-                },
-                justify: {
-                    content: 'space-between',
-                },
-                align: {
-                    items: 'baseline',
-                },
-                gap: $mol_gap.space,
-            },
-            Progress: {
-                flex: {
-                    basis: '0.5rem',
-                    grow: 0,
-                },
-                width: '100%',
-            },
-            Title: {
-                font: {
-                    size: '1.1rem',
-                    weight: 'bold',
-                },
-            },
-            Total: {
-                whiteSpace: 'nowrap',
             },
             Mine: {
                 minWidth: '2.5rem',
@@ -20688,6 +22725,328 @@ var $;
 })($ || ($ = {}));
 
 ;
+	($.$bog_basket_buyer) = class $bog_basket_buyer extends ($.$mol_page) {
+		shop_title(){
+			return "";
+		}
+		point_open(id, next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		point_title(id){
+			return "";
+		}
+		Point_title(id){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.point_title(id))]);
+			return obj;
+		}
+		point_address(id){
+			return "";
+		}
+		Point_address(id){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.point_address(id))]);
+			return obj;
+		}
+		Point(id){
+			const obj = new this.$.$mol_button_minor();
+			(obj.click) = (next) => ((this.point_open(id, next)));
+			(obj.sub) = () => ([(this.Point_title(id)), (this.Point_address(id))]);
+			return obj;
+		}
+		point_rows(){
+			return [(this.Point(id))];
+		}
+		Points(){
+			const obj = new this.$.$mol_list();
+			(obj.rows) = () => ((this.point_rows()));
+			return obj;
+		}
+		intro_text(){
+			return "";
+		}
+		Intro(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ((this.intro_text()));
+			return obj;
+		}
+		money(next){
+			if(next !== undefined) return next;
+			return 500;
+		}
+		Money_number(){
+			const obj = new this.$.$mol_number();
+			(obj.value_min) = () => (0);
+			(obj.precision_change) = () => (100);
+			(obj.value) = (next) => ((this.money(next)));
+			return obj;
+		}
+		Money(){
+			const obj = new this.$.$mol_labeler();
+			(obj.title) = () => ("Сколько готовы потратить, ₽");
+			(obj.content) = () => ([(this.Money_number())]);
+			return obj;
+		}
+		good_title(id){
+			return "";
+		}
+		Good_title(id){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.good_title(id))]);
+			return obj;
+		}
+		good_count(id){
+			return "";
+		}
+		Good_count(id){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.good_count(id))]);
+			return obj;
+		}
+		Good(id){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Good_title(id)), (this.Good_count(id))]);
+			return obj;
+		}
+		good_rows(){
+			return [(this.Good(id))];
+		}
+		Goods(){
+			const obj = new this.$.$mol_list();
+			(obj.rows) = () => ((this.good_rows()));
+			return obj;
+		}
+		note_text(){
+			return "";
+		}
+		Note(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ((this.note_text()));
+			return obj;
+		}
+		Refuse(){
+			const obj = new this.$.$mol_paragraph();
+			(obj.title) = () => ("Не принимаем стекло, скоропортящееся, алкоголь и табак.");
+			return obj;
+		}
+		blocks(){
+			return [
+				(this.Points()), 
+				(this.Intro()), 
+				(this.Money()), 
+				(this.Goods()), 
+				(this.Note()), 
+				(this.Refuse())
+			];
+		}
+		shop(){
+			const obj = new this.$.$bog_basket_shop();
+			return obj;
+		}
+		point_id(next){
+			if(next !== undefined) return next;
+			return "";
+		}
+		title(){
+			return (this.shop_title());
+		}
+		body(){
+			return (this.blocks());
+		}
+	};
+	($mol_mem_key(($.$bog_basket_buyer.prototype), "point_open"));
+	($mol_mem_key(($.$bog_basket_buyer.prototype), "Point_title"));
+	($mol_mem_key(($.$bog_basket_buyer.prototype), "Point_address"));
+	($mol_mem_key(($.$bog_basket_buyer.prototype), "Point"));
+	($mol_mem(($.$bog_basket_buyer.prototype), "Points"));
+	($mol_mem(($.$bog_basket_buyer.prototype), "Intro"));
+	($mol_mem(($.$bog_basket_buyer.prototype), "money"));
+	($mol_mem(($.$bog_basket_buyer.prototype), "Money_number"));
+	($mol_mem(($.$bog_basket_buyer.prototype), "Money"));
+	($mol_mem_key(($.$bog_basket_buyer.prototype), "Good_title"));
+	($mol_mem_key(($.$bog_basket_buyer.prototype), "Good_count"));
+	($mol_mem_key(($.$bog_basket_buyer.prototype), "Good"));
+	($mol_mem(($.$bog_basket_buyer.prototype), "Goods"));
+	($mol_mem(($.$bog_basket_buyer.prototype), "Note"));
+	($mol_mem(($.$bog_basket_buyer.prototype), "Refuse"));
+	($mol_mem(($.$bog_basket_buyer.prototype), "shop"));
+	($mol_mem(($.$bog_basket_buyer.prototype), "point_id"));
+
+
+;
+"use strict";
+
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        class $bog_basket_buyer extends $.$bog_basket_buyer {
+            shop_title() {
+                return this.shop().Title()?.val() || 'Что купить';
+            }
+            point_ids() {
+                return (this.shop().Points()?.keys() ?? []).map(String);
+            }
+            point(id) {
+                const text = this.shop().Points()?.key(id)?.val();
+                return text ? JSON.parse(text) : null;
+            }
+            point_current() {
+                const ids = this.point_ids();
+                const id = this.point_id() || (ids.length === 1 ? ids[0] : '');
+                return id ? this.point(id) : null;
+            }
+            blocks() {
+                if (!this.point_current())
+                    return [this.Intro(), this.Points()];
+                return [this.Intro(), this.Money(), this.Goods(), this.Note(), this.Refuse()];
+            }
+            intro_text() {
+                const point = this.point_current();
+                if (!point)
+                    return this.point_ids().length ? 'Выберите точку, где вы сейчас.' : 'Здесь пока нет точек сбора.';
+                return [point.title, point.address].filter(Boolean).join(', ') + '. Вот что сейчас нужнее всего:';
+            }
+            point_rows() {
+                return this.point_ids().map(id => this.Point(id));
+            }
+            point_title(id) {
+                return this.point(id)?.title ?? '';
+            }
+            point_address(id) {
+                return this.point(id)?.address ?? '';
+            }
+            point_open(id) {
+                this.point_id(id);
+            }
+            counts() {
+                return $bog_basket_buy(this.point_current()?.goods ?? [], this.money() || 0);
+            }
+            priced() {
+                return this.point_current()?.goods.some(good => good.price > 0) ?? false;
+            }
+            good_rows() {
+                const goods = this.point_current()?.goods ?? [];
+                return goods
+                    .map((good, index) => ({ good, index }))
+                    .filter(({ good, index }) => this.priced() ? this.counts()[index] : good.got < good.need)
+                    .map(({ index }) => this.Good(index));
+            }
+            good_title(index) {
+                return this.point_current()?.goods[index]?.title ?? '';
+            }
+            good_count(index) {
+                const good = this.point_current()?.goods[index];
+                if (!good)
+                    return '';
+                if (!this.priced())
+                    return `ещё ${good.need - good.got} шт.`;
+                const count = this.counts()[index];
+                return `${count} шт., ${count * good.price} ₽`;
+            }
+            note_text() {
+                const goods = this.point_current()?.goods ?? [];
+                if (goods.every(good => good.got >= good.need))
+                    return 'План точки собран, спасибо!';
+                if (!this.priced())
+                    return '';
+                const sum = this.counts().reduce((sum, count, index) => sum + count * goods[index].price, 0);
+                if (!sum)
+                    return 'На эту сумму ничего из нужного не купить.';
+                return `Итого около ${sum} ₽. Цены ориентировочные, на полке могут отличаться.`;
+            }
+        }
+        __decorate([
+            $mol_mem_key
+        ], $bog_basket_buyer.prototype, "point", null);
+        __decorate([
+            $mol_action
+        ], $bog_basket_buyer.prototype, "point_open", null);
+        __decorate([
+            $mol_mem
+        ], $bog_basket_buyer.prototype, "counts", null);
+        __decorate([
+            $mol_mem
+        ], $bog_basket_buyer.prototype, "good_rows", null);
+        $$.$bog_basket_buyer = $bog_basket_buyer;
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
+"use strict";
+var $;
+(function ($) {
+    var $$;
+    (function ($$) {
+        $mol_style_define($bog_basket_buyer, {
+            flex: {
+                basis: '32rem',
+                grow: 1,
+            },
+            Intro: {
+                padding: $mol_gap.block,
+                font: {
+                    size: '1.25rem',
+                },
+            },
+            Points: {
+                gap: $mol_gap.space,
+                padding: $mol_gap.block,
+            },
+            Point: {
+                flex: {
+                    direction: 'column',
+                },
+                align: {
+                    items: 'flex-start',
+                },
+                background: {
+                    color: $mol_theme.card,
+                },
+            },
+            Point_title: {
+                font: {
+                    weight: 'bold',
+                },
+            },
+            Goods: {
+                gap: $mol_gap.space,
+                padding: $mol_gap.block,
+            },
+            Good: {
+                justify: {
+                    content: 'space-between',
+                },
+                padding: $mol_gap.block,
+                background: {
+                    color: $mol_theme.card,
+                },
+                border: {
+                    radius: $mol_gap.round,
+                },
+            },
+            Good_title: {
+                font: {
+                    size: '1.1rem',
+                    weight: 'bold',
+                },
+            },
+            Note: {
+                padding: $mol_gap.block,
+            },
+            Refuse: {
+                padding: $mol_gap.block,
+                color: $mol_theme.shade,
+            },
+        });
+    })($$ = $.$$ || ($.$$ = {}));
+})($ || ($ = {}));
+
+;
 	($.$bog_basket_app) = class $bog_basket_app extends ($.$mol_book2) {
 		Theme(){
 			const obj = new this.$.$mol_theme_auto();
@@ -20695,12 +23054,80 @@ var $;
 		}
 		About(){
 			const obj = new this.$.$mol_paragraph();
-			(obj.title) = () => ("Учёт пункта сбора продуктов. Волонтёр отмечает принятое кнопками, даже без интернета, а штаб видит, чего не хватает на каждой точке.");
+			(obj.title) = () => ("Учёт пунктов сбора продуктов. Волонтёр отмечает принятое кнопками, даже без интернета, а штаб видит, чего не хватает на каждой точке.");
 			return obj;
 		}
-		Invite(){
+		drive_arg(id){
+			return {};
+		}
+		drive_title(id){
+			return "";
+		}
+		Drive(id){
+			const obj = new this.$.$mol_link();
+			(obj.arg) = () => ((this.drive_arg(id)));
+			(obj.title) = () => ((this.drive_title(id)));
+			return obj;
+		}
+		drive_rows(){
+			return [(this.Drive(id))];
+		}
+		Drives_rows(){
+			const obj = new this.$.$mol_list();
+			(obj.rows) = () => ((this.drive_rows()));
+			return obj;
+		}
+		Drives(){
+			const obj = new this.$.$mol_labeler();
+			(obj.title) = () => ("Ваши сборы");
+			(obj.content) = () => ([(this.Drives_rows())]);
+			return obj;
+		}
+		create_title(next){
+			if(next !== undefined) return next;
+			return "";
+		}
+		create(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		Create_title(){
+			const obj = new this.$.$mol_string();
+			(obj.hint) = () => ("Название сбора");
+			(obj.value) = (next) => ((this.create_title(next)));
+			(obj.submit) = (next) => ((this.create(next)));
+			return obj;
+		}
+		create_enabled(){
+			return false;
+		}
+		Create_run(){
+			const obj = new this.$.$mol_button_major();
+			(obj.title) = () => ("Создать");
+			(obj.enabled) = () => ((this.create_enabled()));
+			(obj.click) = (next) => ((this.create(next)));
+			return obj;
+		}
+		Create_row(){
+			const obj = new this.$.$mol_view();
+			(obj.sub) = () => ([(this.Create_title()), (this.Create_run())]);
+			return obj;
+		}
+		Create(){
+			const obj = new this.$.$mol_labeler();
+			(obj.title) = () => ("Вы координатор");
+			(obj.content) = () => ([(this.Create_row())]);
+			return obj;
+		}
+		Join_hint(){
 			const obj = new this.$.$mol_paragraph();
-			(obj.title) = () => ("Если вы волонтёр, откройте ссылку, которую прислал координатор.");
+			(obj.title) = () => ("Откройте ссылку, которую прислал координатор.");
+			return obj;
+		}
+		Join(){
+			const obj = new this.$.$mol_labeler();
+			(obj.title) = () => ("Вы волонтёр");
+			(obj.content) = () => ([(this.Join_hint())]);
 			return obj;
 		}
 		example_open(next){
@@ -20713,12 +23140,48 @@ var $;
 			(obj.click) = (next) => ((this.example_open(next)));
 			return obj;
 		}
+		Try(){
+			const obj = new this.$.$mol_labeler();
+			(obj.title) = () => ("Хотите посмотреть");
+			(obj.content) = () => ([(this.Example())]);
+			return obj;
+		}
+		welcome_blocks(){
+			return [
+				(this.About()), 
+				(this.Drives()), 
+				(this.Create()), 
+				(this.Join()), 
+				(this.Try())
+			];
+		}
 		admission_link(){
 			return "";
 		}
 		drive(){
 			const obj = new this.$.$bog_basket_drive();
 			return obj;
+		}
+		admit(next){
+			if(next !== undefined) return next;
+			return "";
+		}
+		invite_link(){
+			return "";
+		}
+		spot_point(id){
+			const obj = new this.$.$bog_basket_point();
+			return obj;
+		}
+		buyer_link(id){
+			return "";
+		}
+		spot_close(next){
+			if(next !== undefined) return next;
+			return null;
+		}
+		chief(){
+			return false;
 		}
 		shift_start(id, next){
 			if(next !== undefined) return next;
@@ -20736,6 +23199,14 @@ var $;
 			if(next !== undefined) return next;
 			return null;
 		}
+		shop(){
+			const obj = new this.$.$bog_basket_shop();
+			return obj;
+		}
+		spot_id(next){
+			if(next !== undefined) return next;
+			return "";
+		}
 		plugins(){
 			return [(this.Theme())];
 		}
@@ -20745,11 +23216,7 @@ var $;
 		Welcome(){
 			const obj = new this.$.$mol_page();
 			(obj.title) = () => ("Корзина");
-			(obj.body) = () => ([
-				(this.About()), 
-				(this.Invite()), 
-				(this.Example())
-			]);
+			(obj.body) = () => ((this.welcome_blocks()));
 			return obj;
 		}
 		Admission(){
@@ -20757,9 +23224,35 @@ var $;
 			(obj.link) = () => ((this.admission_link()));
 			return obj;
 		}
+		Office(){
+			const obj = new this.$.$bog_basket_office();
+			(obj.drive) = () => ((this.drive()));
+			return obj;
+		}
+		Team(){
+			const obj = new this.$.$bog_basket_team();
+			(obj.drive) = () => ((this.drive()));
+			(obj.admit) = (next) => ((this.admit(next)));
+			(obj.invite_link) = () => ((this.invite_link()));
+			return obj;
+		}
+		Kit(){
+			const obj = new this.$.$bog_basket_kit();
+			(obj.drive) = () => ((this.drive()));
+			return obj;
+		}
+		Spot(id){
+			const obj = new this.$.$bog_basket_spot();
+			(obj.drive) = () => ((this.drive()));
+			(obj.point) = () => ((this.spot_point(id)));
+			(obj.buyer_link) = () => ((this.buyer_link(id)));
+			(obj.drop_done) = (next) => ((this.spot_close(next)));
+			return obj;
+		}
 		Points(){
 			const obj = new this.$.$bog_basket_points();
 			(obj.drive) = () => ((this.drive()));
+			(obj.chief) = () => ((this.chief()));
 			(obj.start) = (id, next) => ((this.shift_start(id, next)));
 			return obj;
 		}
@@ -20771,21 +23264,48 @@ var $;
 			(obj.finish) = (next) => ((this.shift_finish(id, next)));
 			return obj;
 		}
+		Buyer(){
+			const obj = new this.$.$bog_basket_buyer();
+			(obj.shop) = () => ((this.shop()));
+			(obj.point_id) = (next) => ((this.spot_id(next)));
+			return obj;
+		}
 	};
 	($mol_mem(($.$bog_basket_app.prototype), "Theme"));
 	($mol_mem(($.$bog_basket_app.prototype), "About"));
-	($mol_mem(($.$bog_basket_app.prototype), "Invite"));
+	($mol_mem_key(($.$bog_basket_app.prototype), "Drive"));
+	($mol_mem(($.$bog_basket_app.prototype), "Drives_rows"));
+	($mol_mem(($.$bog_basket_app.prototype), "Drives"));
+	($mol_mem(($.$bog_basket_app.prototype), "create_title"));
+	($mol_mem(($.$bog_basket_app.prototype), "create"));
+	($mol_mem(($.$bog_basket_app.prototype), "Create_title"));
+	($mol_mem(($.$bog_basket_app.prototype), "Create_run"));
+	($mol_mem(($.$bog_basket_app.prototype), "Create_row"));
+	($mol_mem(($.$bog_basket_app.prototype), "Create"));
+	($mol_mem(($.$bog_basket_app.prototype), "Join_hint"));
+	($mol_mem(($.$bog_basket_app.prototype), "Join"));
 	($mol_mem(($.$bog_basket_app.prototype), "example_open"));
 	($mol_mem(($.$bog_basket_app.prototype), "Example"));
+	($mol_mem(($.$bog_basket_app.prototype), "Try"));
 	($mol_mem(($.$bog_basket_app.prototype), "drive"));
+	($mol_mem(($.$bog_basket_app.prototype), "admit"));
+	($mol_mem_key(($.$bog_basket_app.prototype), "spot_point"));
+	($mol_mem(($.$bog_basket_app.prototype), "spot_close"));
 	($mol_mem_key(($.$bog_basket_app.prototype), "shift_start"));
 	($mol_mem_key(($.$bog_basket_app.prototype), "shift_point"));
 	($mol_mem_key(($.$bog_basket_app.prototype), "shift"));
 	($mol_mem_key(($.$bog_basket_app.prototype), "shift_finish"));
+	($mol_mem(($.$bog_basket_app.prototype), "shop"));
+	($mol_mem(($.$bog_basket_app.prototype), "spot_id"));
 	($mol_mem(($.$bog_basket_app.prototype), "Welcome"));
 	($mol_mem(($.$bog_basket_app.prototype), "Admission"));
+	($mol_mem(($.$bog_basket_app.prototype), "Office"));
+	($mol_mem(($.$bog_basket_app.prototype), "Team"));
+	($mol_mem(($.$bog_basket_app.prototype), "Kit"));
+	($mol_mem_key(($.$bog_basket_app.prototype), "Spot"));
 	($mol_mem(($.$bog_basket_app.prototype), "Points"));
 	($mol_mem_key(($.$bog_basket_app.prototype), "Counter"));
+	($mol_mem(($.$bog_basket_app.prototype), "Buyer"));
 
 
 ;
@@ -20808,18 +23328,42 @@ var $;
             lord() {
                 return this.$.$giper_baza_auth.current().pass().lord();
             }
-            drive_id(next) {
-                const id = this.$.$mol_state_arg.value('drive', next);
-                if (id && /^\w{8}_\w{8}$/.test(id))
-                    return id;
-                return this.home().Drives()?.items().at(-1)?.str ?? '';
+            arg(key, next) {
+                if (next !== undefined)
+                    this.$.$mol_state_arg.go({ [key]: next || null });
+                return this.$.$mol_state_arg.value(key) ?? '';
+            }
+            drive_id() {
+                const id = this.$.$mol_state_arg.value('drive');
+                if (id === null)
+                    return this.home().Drives()?.items().at(-1)?.str ?? '';
+                return /^[\wæÆ]{8}_[\wæÆ]{8}$/.test(id) ? id : '';
+            }
+            drive_open(id) {
+                this.$.$mol_state_arg.go({ drive: id, screen: null, point: null, admit: null });
+            }
+            screen(next) {
+                return this.arg('screen', next);
+            }
+            spot_id(next) {
+                return this.arg('point', next);
+            }
+            admit(next) {
+                return this.arg('admit', next);
+            }
+            shop_id() {
+                return this.$.$mol_state_arg.value('shop') ?? '';
+            }
+            shop() {
+                return this.$.$giper_baza_glob.Land(new $giper_baza_link(this.shop_id())).Data($bog_basket_shop);
             }
             drive() {
                 return this.$.$giper_baza_glob.Land(new $giper_baza_link(this.drive_id())).Data($bog_basket_drive);
             }
             auto() {
                 this.home();
-                this.drive_remember();
+                if (!this.shop_id())
+                    this.drive_remember();
             }
             drive_remember() {
                 const id = this.drive_id();
@@ -20831,10 +23375,72 @@ var $;
                 const drives = this.home().Drives('auto');
                 drives.items([...drives.items(), link]);
             }
+            tier() {
+                return $bog_basket_tier(this.drive().land(), this.lord());
+            }
             admitted() {
-                const land = this.drive().land();
-                land.sync();
-                return land.lord_rank(this.lord()) >= $giper_baza_rank_tier.post;
+                return this.tier() >= $giper_baza_rank_tier.post;
+            }
+            chief() {
+                return this.tier() >= $giper_baza_rank_tier.rule;
+            }
+            invite_link() {
+                return this.$.$mol_state_arg.make_link({ drive: this.drive_id() });
+            }
+            buyer_link(point) {
+                const shop = this.drive().Shop()?.val();
+                return shop ? this.$.$mol_state_arg.make_link({ shop, point }) : '';
+            }
+            spot_point(id) {
+                return this.drive().land().Pawn($bog_basket_point).Head(new $giper_baza_link(id));
+            }
+            spot_close() {
+                this.drive_open(this.drive_id());
+            }
+            drive_ids() {
+                return (this.home().Drives()?.items() ?? []).map(link => link.str);
+            }
+            drive_rows() {
+                return this.drive_ids().map(id => this.Drive(id)).reverse();
+            }
+            drive_arg(id) {
+                return { drive: id, screen: null, point: null, admit: null };
+            }
+            drive_title(id) {
+                const land = this.$.$giper_baza_glob.Land(new $giper_baza_link(id));
+                if ($bog_basket_tier(land, this.lord()) < $giper_baza_rank_tier.read)
+                    return 'Ждёт допуска';
+                return land.Data($bog_basket_drive).Title()?.val() || 'Без названия';
+            }
+            welcome_blocks() {
+                return [
+                    this.About(),
+                    ...this.drive_ids().length ? [this.Drives()] : [],
+                    this.Create(),
+                    this.Join(),
+                    this.Try(),
+                ];
+            }
+            office_pages() {
+                const side = this.admit() ? 'team' : this.screen();
+                return [
+                    this.Office(),
+                    ...side === 'team' ? [this.Team()] : [],
+                    ...side === 'kit' ? [this.Kit()] : [],
+                    ...side === 'spot' && this.spot_id() ? [this.Spot(this.spot_id())] : [],
+                ];
+            }
+            create_enabled() {
+                return Boolean(this.create_title().trim());
+            }
+            create() {
+                if (!this.create_enabled())
+                    return;
+                const drive = $bog_basket_drive_make(this.$, this.create_title().trim());
+                for (const good of $bog_basket_example_goods)
+                    $bog_basket_good_make(drive, good.title, good.weight, good.kit, 0);
+                this.create_title('');
+                this.drive_open(drive.land().link().str);
             }
             admission_link() {
                 return this.$.$mol_state_arg.make_link({
@@ -20853,10 +23459,14 @@ var $;
                     .find(point => point.Shifts()?.items().some(link => link.head().str === id));
             }
             pages() {
+                if (this.shop_id())
+                    return [this.Buyer()];
                 if (!this.drive_id())
                     return [this.Welcome()];
                 if (!this.admitted())
                     return [this.Admission()];
+                if (this.chief() && this.screen() !== 'count')
+                    return this.office_pages();
                 const shift = this.shift_id();
                 return [shift && this.shift_point(shift) ? this.Counter(shift) : this.Points()];
             }
@@ -20879,9 +23489,15 @@ var $;
                     const shift = $bog_basket_shift_make(point, '', new $mol_time_moment);
                     counts.forEach((count, index) => shift.Counts('auto').key(goods[index].head().str, 'auto').val(count));
                 }
-                this.drive_id(drive.land().link().str);
+                this.drive_open(drive.land().link().str);
             }
         }
+        __decorate([
+            $mol_action
+        ], $bog_basket_app.prototype, "spot_close", null);
+        __decorate([
+            $mol_action
+        ], $bog_basket_app.prototype, "create", null);
         __decorate([
             $mol_action
         ], $bog_basket_app.prototype, "shift_start", null);
@@ -20912,13 +23528,9 @@ var $;
             About: {
                 padding: $mol_gap.block,
             },
-            Invite: {
-                padding: $mol_gap.block,
-            },
-            Example: {
-                margin: $mol_gap.block,
-                align: {
-                    self: 'flex-start',
+            Create_title: {
+                flex: {
+                    grow: 1,
                 },
             },
         });
