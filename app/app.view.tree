@@ -1,0 +1,24 @@
+$bog_basket_app $mol_book2
+	plugins /
+		<= Theme $mol_theme_auto
+	Placeholder null
+	Welcome $mol_page
+		title \Корзина
+		body /
+			<= About $mol_paragraph
+				title \Учёт пункта сбора продуктов. Волонтёр отмечает принятое кнопками, даже без интернета, а штаб видит, чего не хватает на каждой точке.
+			<= Invite $mol_paragraph
+				title \Если вы волонтёр, откройте ссылку, которую прислал координатор.
+			<= Example $mol_button_major
+				title \Показать на примере
+				click? <=> example_open? null
+	Admission $bog_basket_admission
+		link <= admission_link \
+	Points $bog_basket_points
+		drive <= drive $bog_basket_drive
+		start*? <=> shift_start*? null
+	Counter* $bog_basket_counter
+		drive <= drive
+		point <= shift_point* $bog_basket_point
+		shift <= shift* $bog_basket_shift
+		finish? <=> shift_finish*? null

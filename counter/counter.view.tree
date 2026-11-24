@@ -1,0 +1,27 @@
+$bog_basket_counter $mol_page
+	drive $bog_basket_drive
+	point $bog_basket_point
+	shift $bog_basket_shift
+	title <= point_title \
+	tools /
+		<= Status $giper_baza_status
+	body /
+		<= Ask $mol_paragraph
+			title <= ask_text \
+		<= Tiles $mol_list
+			rows <= tiles /
+				<= Tile* $bog_basket_tile
+					title <= good_title* \
+					got <= good_got* 0
+					need <= good_need* 0
+					mine? <=> good_mine*? 0
+		<= Refuse $mol_paragraph
+			title \Не принимаем стекло, скоропортящееся, алкоголь и табак.
+		<= Kept $mol_paragraph
+			title \Отметки сохраняются на телефоне и уйдут в штаб, когда появится связь.
+	foot /
+		<= Summary $mol_paragraph
+			title <= summary_text \
+		<= Finish $mol_button_minor
+			title \Закончить смену
+			click? <=> finish? null

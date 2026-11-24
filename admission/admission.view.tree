@@ -1,0 +1,16 @@
+$bog_basket_admission $mol_page
+	link \
+	title \Нужен допуск
+	tools /
+		<= Status $giper_baza_status
+	body /
+		<= Hint $mol_paragraph
+			title \Покажите этот код координатору. Когда вас допустят, здесь сам появится список точек. Для допуска нужен интернет, дальше можно работать без него.
+		<= Code $bog_qr
+			uri <= link
+			gradient_stops /
+				\var(--mol_theme_text)
+				\var(--mol_theme_text)
+		<= Copy $mol_button_copy
+			title \Скопировать ссылку для координатора
+			text <= link

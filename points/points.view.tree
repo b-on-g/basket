@@ -1,0 +1,23 @@
+$bog_basket_points $mol_page
+	drive $bog_basket_drive
+	start*? null
+	title <= drive_title \
+	tools /
+		<= Status $giper_baza_status
+	body /
+		<= Hint $mol_paragraph
+			title <= hint_text \
+		<= Rows $mol_list
+			rows <= rows /
+				<= Row* $mol_button_minor
+					click? <=> start*?
+					sub /
+						<= Row_title* $mol_view
+							sub /
+								<= point_title* \
+						<= Row_address* $mol_view
+							sub /
+								<= point_address* \
+						<= Row_kits* $mol_view
+							sub /
+								<= point_kits* \

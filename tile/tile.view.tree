@@ -1,0 +1,31 @@
+$bog_basket_tile $mol_view
+	got 0
+	need 0
+	mine? 0
+	attr *
+		^
+		bog_basket_tile_full <= full false
+	sub /
+		<= Add $mol_button_minor
+			hint \Принять одну
+			click? <=> add? null
+			sub /
+				<= Head $mol_view
+					sub /
+						<= Title $mol_view
+							sub /
+								<= title \
+						<= Total $mol_view
+							sub /
+								<= total_text \
+				<= Progress $mol_portion
+					portion <= progress 0
+		<= Mine $mol_view
+			sub /
+				<= mine_text \
+		<= Drop $mol_button_minor
+			hint \Убрать одну
+			enabled <= drop_enabled false
+			click? <=> drop? null
+			sub <= drop_content /
+				<= Drop_icon $mol_icon_minus
